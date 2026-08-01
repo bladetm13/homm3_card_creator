@@ -9,10 +9,10 @@ import { textToComponent } from "@/lib/textToComponent";
 import { useBackground, useBorder } from "@/hooks/background";
 import { TypeBadge } from "./FactionUnitCard";
 
-import BronzeStar from "@/assets/glyphs/tier-stars/bronze.png";
-import SilverStar from "@/assets/glyphs/tier-stars/silver.png";
-import GoldenStar from "@/assets/glyphs/tier-stars/golden.png";
-import AzureStar from "@/assets/glyphs/tier-stars/azure.png";
+import BronzeStar from "@/assets/glyphsInternal/tier-stars/bronze.png";
+import SilverStar from "@/assets/glyphsInternal/tier-stars/silver.png";
+import GoldenStar from "@/assets/glyphsInternal/tier-stars/golden.png";
+import AzureStar from "@/assets/glyphsInternal/tier-stars/azure.png";
 
 const tierStars: Record<UnitTier, { src: string }> = {
   [UnitTier.Bronze]: BronzeStar,

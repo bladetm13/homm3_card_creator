@@ -4,7 +4,7 @@ import { EventCard as EventCardModel } from "@/models/eventCard";
 import styles from "./EventCard.module.css";
 import { textToComponent } from "@/lib/textToComponent";
 
-import FlourishIcon from "@/assets/glyphs/event-flourish.png";
+import FlourishIcon from "@/assets/glyphsInternal/event-flourish.png";
 
 export default function EventCard({ event }: { event: EventCardModel }) {
   return (

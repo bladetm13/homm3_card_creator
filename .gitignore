@@ -55,3 +55,6 @@ next-env.d.ts
 /src/assets/layout/
 /src/assets/qr-codes/
 /src/assets/tables/
+
+# symlink-dir moves the previous real directory aside before linking.
+.ignored_*/

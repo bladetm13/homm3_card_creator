@@ -8,15 +8,15 @@ import clsx from "clsx";
 import { textToComponent } from "@/lib/textToComponent";
 import { useBackground, useBorder } from "@/hooks/background";
 
-import GoldIcon from "@/assets/glyphs/price-icons/gold.png";
-import ValuableIcon from "@/assets/glyphs/price-icons/valuables.png";
-import RecruitIcon from "@/assets/glyphs/recruit.svg";
+import GoldIcon from "@/assets/glyphsInternal/price-icons/gold.png";
+import ValuableIcon from "@/assets/glyphsInternal/price-icons/valuables.png";
+import RecruitIcon from "@/assets/glyphsInternal/recruit.svg";
 import ReinforceIcon from "@/assets/glyphs/reinforce.svg";
 
-import BronzeStar from "@/assets/glyphs/tier-stars/bronze.png";
-import SilverStar from "@/assets/glyphs/tier-stars/silver.png";
-import GoldenStar from "@/assets/glyphs/tier-stars/golden.png";
-import AzureStar from "@/assets/glyphs/tier-stars/azure.png";
+import BronzeStar from "@/assets/glyphsInternal/tier-stars/bronze.png";
+import SilverStar from "@/assets/glyphsInternal/tier-stars/silver.png";
+import GoldenStar from "@/assets/glyphsInternal/tier-stars/golden.png";
+import AzureStar from "@/assets/glyphsInternal/tier-stars/azure.png";
 
 import UnitGroundIcon from "@/assets/glyphsInternal/unit_ground.svg";
 import UnitFlyingIcon from "@/assets/glyphsInternal/unit_flying.svg";

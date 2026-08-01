@@ -25,7 +25,7 @@ import ParalysisIcon from "@/assets/glyphs/paralysis.svg";
 import GoldIcon from "@/assets/glyphs/gold.svg";
 import ValuableIcon from "@/assets/glyphs/valuablegreater.svg";
 import BuildingMaterialIcon from "@/assets/glyphs/building_materials.svg";
-import PayIcon from "@/assets/glyphs/price-icons/pay.png";
+import PayIcon from "@/assets/glyphsInternal/price-icons/pay.png";
 
 import UnitGroundIcon from "@/assets/glyphsInternal/unit_ground.svg";
 import UnitFlyingIcon from "@/assets/glyphsInternal/unit_flying.svg";

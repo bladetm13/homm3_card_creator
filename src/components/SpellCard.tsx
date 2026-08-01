@@ -8,10 +8,10 @@ import { textToComponent, TextToComponentProps } from "@/lib/textToComponent";
 import SpellEffect from "./SpellEffect";
 import clsx from "clsx";
 
-import EarthIcon from "@/assets/glyphs/spell-schools/earth.png";
-import WaterIcon from "@/assets/glyphs/spell-schools/water.png";
-import FireIcon from "@/assets/glyphs/spell-schools/fire.png";
-import AirIcon from "@/assets/glyphs/spell-schools/air.png";
+import EarthIcon from "@/assets/glyphsInternal/spell-schools/earth.png";
+import WaterIcon from "@/assets/glyphsInternal/spell-schools/water.png";
+import FireIcon from "@/assets/glyphsInternal/spell-schools/fire.png";
+import AirIcon from "@/assets/glyphsInternal/spell-schools/air.png";
 
 const textToComponentProps: TextToComponentProps = {
   renderSpell: (props) => <SpellEffect {...props} />,
