@@ -5,7 +5,7 @@
     <img src="https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white">
     <a href="https://discord.gg/nMbawQkj9R"><img src="https://dcbadge.limes.pink/api/server/nMbawQkj9R"></a>
   </p>
-  <h1><a href="https://wololoeren.github.io/Homm3_card_creator">👉 GO TO THE APP 👈</a></h1>
+  <h1><a href="https://wololoeren.github.io/homm3_card_creator">👉 GO TO THE APP 👈</a></h1>
 </div>
 
 ## About

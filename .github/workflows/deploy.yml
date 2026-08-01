@@ -42,7 +42,7 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: NEXT_BASE_PATH=/Homm3_card_creator npm run build
+        run: NEXT_BASE_PATH=/homm3_card_creator npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
