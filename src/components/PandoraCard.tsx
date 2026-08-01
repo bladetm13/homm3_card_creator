@@ -1,0 +1,36 @@
+"use client";
+
+import { PandoraCard as PandoraCardModel } from "@/models/pandoraCard";
+import styles from "./PandoraCard.module.css";
+import { textToComponent } from "@/lib/textToComponent";
+import { useBorder } from "@/hooks/background";
+
+export default function PandoraCard({
+  pandora,
+}: {
+  pandora: PandoraCardModel;
+}) {
+  const borderUrl = useBorder("#a5202f");
+
+  return (
+    <div
+      className={styles.card}
+      style={{ "--border-image": borderUrl } as React.CSSProperties}
+    >
+      <div className={styles.inner}>
+        <div className={styles.title}>
+          <h3>Pandora&apos;s Box</h3>
+        </div>
+
+        <div
+          className={styles.icon}
+          style={{ backgroundImage: `url("pandora_box.png")` }}
+        />
+
+        <div className={styles.effect}>
+          <div>{textToComponent(pandora.effect)}</div>
+        </div>
+      </div>
+    </div>
+  );
+}

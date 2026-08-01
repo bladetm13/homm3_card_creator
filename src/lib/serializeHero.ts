@@ -17,6 +17,10 @@ function parseHero(data: string): Hero {
     throw new Error("Invalid format!");
   }
 
+  if (!obj.hero) {
+    throw new Error("This file is not a hero card!");
+  }
+
   return (obj as JsonFormat).hero;
 }
 

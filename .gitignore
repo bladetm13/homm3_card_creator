@@ -43,3 +43,15 @@ next-env.d.ts
 # Project specific ignores
 /public/images
 /public/credits
+
+# Editable sources and unreferenced art: present locally, not needed to build.
+# Nothing under src/ imports these (checked by import path, not filename).
+/src/assets/gimp-files/
+/src/assets/art/
+/src/assets/examples/
+/src/assets/images/
+/src/assets/box-covers/
+/src/assets/map-locations/
+/src/assets/layout/
+/src/assets/qr-codes/
+/src/assets/tables/

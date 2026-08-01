@@ -1,0 +1,100 @@
+.spellContainer {
+  width: 100%;
+  /* Grows when a row wraps — a fixed height made long effects spill over the
+     divider below, and the printed table grows the same way. */
+  min-height: 14mm;
+
+  margin-top: 2.5mm;
+  margin-bottom: 2.5mm;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  .spellOptions {
+    /* Fixed, not stretched: the bracket keeps its aspect ratio, so letting it
+       follow the row height would widen it over the effect text. */
+    height: 14mm;
+    flex: 0 0 auto;
+    position: relative;
+
+    .spellOptionsIcon {
+      height: 100%;
+      width: auto;
+      color: var(--yellow);
+    }
+
+    &.flip {
+      .spellOptionsIcon {
+        transform: scaleX(-1);
+      }
+
+      .spellPowerIcon {
+        left: 0;
+        transform: translateY(-60%) translateX(10%);
+      }
+
+      .powerCount {
+        left: 13.5mm;
+      }
+    }
+
+    &:not(.flip) {
+      .spellPowerIcon {
+        right: 0;
+        transform: translateY(-50%) translateX(-10%) scale(0.7, 0.7);
+      }
+
+      .powerCount {
+        right: 13.3mm;
+      }
+    }
+
+    .spellPowerIcon {
+      position: absolute;
+      color: var(--yellow);
+      top: 50%;
+
+      svg {
+        width: 8mm;
+        height: auto;
+        filter: drop-shadow(0 0.25mm 0.5mm black);
+      }
+    }
+
+    .powerCount {
+      position: absolute;
+      top: 0.75mm;
+      bottom: 0.75mm;
+      width: 3.75mm;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .arrow {
+    width: 6mm;
+    align-self: center;
+    text-align: center;
+    svg {
+      width: 4mm;
+      height: auto;
+      filter: drop-shadow(0 0.25mm 0.5mm black);
+    }
+  }
+
+  .spellOptionsText {
+    align-self: stretch;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-top: 0.75mm;
+    padding-bottom: 0.75mm;
+    padding-left: 2mm;
+  }
+}

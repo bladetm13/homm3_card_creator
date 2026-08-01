@@ -25,6 +25,7 @@ import ParalysisIcon from "@/assets/glyphs/paralysis.svg";
 import GoldIcon from "@/assets/glyphs/gold.svg";
 import ValuableIcon from "@/assets/glyphs/valuablegreater.svg";
 import BuildingMaterialIcon from "@/assets/glyphs/building_materials.svg";
+import PayIcon from "@/assets/glyphs/price-icons/pay.png";
 
 import UnitGroundIcon from "@/assets/glyphsInternal/unit_ground.svg";
 import UnitFlyingIcon from "@/assets/glyphsInternal/unit_flying.svg";
@@ -43,6 +44,43 @@ import ReinforceIcon from "@/assets/glyphs/reinforce.svg";
 import UnitAttackIcon from "@/assets/glyphs/unit_attack-yellow.svg";
 import UnitRetaliateIcon from "@/assets/glyphs/unit_retaliate.svg";
 import UnitSpecialIcon from "@/assets/glyphs/unit_other.svg";
+import UnitPassiveIcon from "@/assets/glyphs/unit_passive.svg";
+
+import Valuables1Icon from "@/assets/glyphs/1_valuables.svg";
+import Valuables2Icon from "@/assets/glyphs/2_valuables.svg";
+import Building2Icon from "@/assets/glyphs/2_building_materials.svg";
+import Building4Icon from "@/assets/glyphs/4_building_materials.svg";
+import Gold3Icon from "@/assets/glyphs/3_gold.svg";
+import Gold6Icon from "@/assets/glyphs/6_gold.svg";
+import TreasureDieIcon from "@/assets/glyphs/trasuredie.svg";
+import TreasureDie2Icon from "@/assets/glyphs/2_treasure_die.svg";
+import PayV2Icon from "@/assets/glyphs/pay_v2.svg";
+
+import ArtifactIcon from "@/assets/glyphs/artifact.svg";
+import SkillIcon from "@/assets/glyphs/skill.svg";
+import MightIcon from "@/assets/glyphs/might.svg";
+import MagicIcon from "@/assets/glyphs/magic.svg";
+import DefenseColorIcon from "@/assets/glyphs/defense_color.svg";
+import PlusOneIcon from "@/assets/glyphs/plusone.svg";
+import ZeroIcon from "@/assets/glyphs/zero.svg";
+import ArrowRightIcon from "@/assets/glyphs/arrow_right.svg";
+import ArrowRightGrayIcon from "@/assets/glyphs/arrow_right_gray.svg";
+
+import Level1Icon from "@/assets/glyphs/level1.svg";
+import Level4Icon from "@/assets/glyphs/level4.svg";
+import Level6Icon from "@/assets/glyphs/level6.svg";
+
+import BronzeMonoIcon from "@/assets/glyphs/bronze-mono.svg";
+import SilverMonoIcon from "@/assets/glyphs/silver-mono.svg";
+import GoldenMonoIcon from "@/assets/glyphs/golden-mono.svg";
+import AzureMonoIcon from "@/assets/glyphs/azure-mono.svg";
+
+import DamageDarkIcon from "@/assets/glyphs/damage.svg";
+
+// These four and defense_color ship without a viewBox, and SVGO strips the one
+// that matches width/height, so they need it supplied explicitly or they render
+// at 1:1 user units inside a 1em box — i.e. blank.
+const MONO_STAR_VIEWBOX = "0 0 350.23517 325.52435";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
@@ -89,6 +127,7 @@ export const iconMap: Record<string, JSX.Element> = {
   ":building:": (
     <BuildingMaterialIcon aria-label="Building Material" className="textIcon" />
   ),
+  ":pay:": <img src={PayIcon.src} alt="Pay" className="textIcon" />,
 
   ":unit_ground:": (
     <UnitGroundIcon
@@ -129,6 +168,86 @@ export const iconMap: Record<string, JSX.Element> = {
   ":unit_special:": (
     <UnitSpecialIcon aria-label="Unit Special acion" className="textIcon" />
   ),
+  ":unit_passive:": (
+    <UnitPassiveIcon aria-label="Unit passive" className="textIcon" />
+  ),
+
+  ":1_valuables:": (
+    <Valuables1Icon aria-label="1 Valuables" className="textIcon" />
+  ),
+  ":2_valuables:": (
+    <Valuables2Icon aria-label="2 Valuables" className="textIcon" />
+  ),
+  ":2_building_materials:": (
+    <Building2Icon aria-label="2 Building Materials" className="textIcon" />
+  ),
+  ":4_building_materials:": (
+    <Building4Icon aria-label="4 Building Materials" className="textIcon" />
+  ),
+  ":3_gold:": <Gold3Icon aria-label="3 Gold" className="textIcon" />,
+  ":6_gold:": <Gold6Icon aria-label="6 Gold" className="textIcon" />,
+  ":treasure_die:": (
+    <TreasureDieIcon aria-label="Treasure die" className="textIcon" />
+  ),
+  ":2_treasure_die:": (
+    <TreasureDie2Icon aria-label="2 Treasure dice" className="textIcon" />
+  ),
+  ":pay_v2:": <PayV2Icon aria-label="Pay" className="textIcon" />,
+
+  ":artifact:": <ArtifactIcon aria-label="Artifact" className="textIcon" />,
+  ":skill:": <SkillIcon aria-label="Skill" className="textIcon" />,
+  ":might:": <MightIcon aria-label="Might" className="textIcon" />,
+  ":magic:": <MagicIcon aria-label="Magic" className="textIcon" />,
+  ":defense_color:": (
+    <DefenseColorIcon
+      viewBox="0 0 249.99348 282.92319"
+      aria-label="Defense"
+      className="textIcon"
+    />
+  ),
+  ":plusone:": <PlusOneIcon aria-label="Plus one" className="textIcon" />,
+  ":zero:": <ZeroIcon aria-label="Zero" className="textIcon" />,
+  ":arrow_right:": (
+    <ArrowRightIcon aria-label="Arrow right" className="textIcon" />
+  ),
+  ":arrow_right_gray:": (
+    <ArrowRightGrayIcon aria-label="Arrow right (gray)" className="textIcon" />
+  ),
+
+  ":level1:": <Level1Icon aria-label="Level I" className="textIcon" />,
+  ":level4:": <Level4Icon aria-label="Level IV" className="textIcon" />,
+  ":level6:": <Level6Icon aria-label="Level VI" className="textIcon" />,
+
+  ":bronze_mono:": (
+    <BronzeMonoIcon
+      viewBox={MONO_STAR_VIEWBOX}
+      aria-label="Bronze tier"
+      className="textIcon"
+    />
+  ),
+  ":silver_mono:": (
+    <SilverMonoIcon
+      viewBox={MONO_STAR_VIEWBOX}
+      aria-label="Silver tier"
+      className="textIcon"
+    />
+  ),
+  ":golden_mono:": (
+    <GoldenMonoIcon
+      viewBox={MONO_STAR_VIEWBOX}
+      aria-label="Golden tier"
+      className="textIcon"
+    />
+  ),
+  ":azure_mono:": (
+    <AzureMonoIcon
+      viewBox={MONO_STAR_VIEWBOX}
+      aria-label="Azure tier"
+      className="textIcon"
+    />
+  ),
+
+  ":damage_dark:": <DamageDarkIcon aria-label="Damage" className="textIcon" />,
 
   ":bronze:": <FontAwesomeIcon icon={faStar} className="bronze" />,
   ":silver:": <FontAwesomeIcon icon={faStar} className="silver" />,
@@ -162,6 +281,8 @@ interface SpellProps {
   power: [number, number, number];
   effect: [React.ReactNode, React.ReactNode, React.ReactNode];
   effectIcon?: React.ReactNode;
+  /** Left-hand icon. Defaults to the spell power book when omitted. */
+  powerIcon?: React.ReactNode;
 }
 
 export interface TextToComponentProps {
@@ -173,7 +294,9 @@ export function textToComponent(
   text: string,
   props: TextToComponentProps = {}
 ): React.ReactNode {
-  const re = /(\*\*|:[a-z_]+:|:stats{[\s;0-9]*}:|:spell{.*?(?=}:)}:|\n\#|\n)/g;
+  // Digits are allowed so tokens can carry a quantity, e.g. :3_gold:.
+  const re =
+    /(\*\*|:[a-z0-9_]+:|:stats{[\s;0-9]*}:|:spell{.*?(?=}:)}:|:scale{.*?(?=}:)}:|\n\#|\n)/g;
   let last = 0;
   let result: React.ReactNode = null;
 
@@ -310,6 +433,48 @@ export function textToComponent(
       } else {
         append(
           <span className="text-danger">Spell must have 2 or 3 components</span>
+        );
+      }
+      last = tokEnd;
+    } else if (tok.startsWith(":scale{")) {
+      // Same two-column table as :spell{}:, but both icons are chosen rather
+      // than fixed to the spell power book and the effect icon.
+      const scaleParts = tok
+        .slice(7, -2)
+        .trim()
+        .slice(1, -1)
+        .split(/\}\s*;\s*\{/)
+        .map((s) =>
+          s
+            .trim()
+            .split(";")
+            .map((p) => p.trim())
+        );
+
+      if (scaleParts.length === 4) {
+        append(
+          props.renderSpell ? (
+            props.renderSpell({
+              powerIcon: iconMap[scaleParts[0][0] as IconToken],
+              power: scaleParts[1].map((p) => parseInt(p)) as [
+                number,
+                number,
+                number
+              ],
+              effect: scaleParts[2].map((p) => textToComponent(p, props)) as [
+                React.ReactNode,
+                React.ReactNode,
+                React.ReactNode
+              ],
+              effectIcon: iconMap[scaleParts[3][0] as IconToken],
+            })
+          ) : (
+            <span className="text-danger">No renderSpell available</span>
+          )
+        );
+      } else {
+        append(
+          <span className="text-danger">Scale must have 4 components</span>
         );
       }
       last = tokEnd;

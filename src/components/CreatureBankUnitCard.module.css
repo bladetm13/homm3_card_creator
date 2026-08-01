@@ -1,0 +1,152 @@
+.card {
+  font-family: var(--font-liberation-serif), "Times New Roman", Times, serif;
+  width: 62.5mm;
+  height: 87.9mm;
+  /* Matches the pack side of the faction unit card, which shares this band
+     structure exactly in the source art (2090x2900 canvas). */
+  padding: 4.7mm 5mm 4.9mm 5mm;
+  background: black;
+  position: relative;
+  margin: 0;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  text-shadow: 0 0.25mm 0.5mm black;
+
+  display: grid;
+  grid-template-columns: 9.3mm minmax(0, 1fr);
+  grid-template-rows: 8.8mm minmax(0, 1fr) 5.85mm 13mm;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 2.7mm;
+    border-image: var(--border-image) 165 / 42px / 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .block {
+    border-width: 0.5mm;
+    border-style: solid;
+    border-color: var(--border-dark) var(--border-dark) var(--border-light)
+      var(--border-light);
+    box-shadow: 0 0 3mm rgba(0, 0, 0, 0.8) inset;
+  }
+}
+
+.leather {
+  background-image: url("@/assets/background/leather.png");
+  background-size: 200%;
+  background-position: center;
+}
+
+.title {
+  grid-area: 1 / 1 / 2 / 3;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6mm;
+
+  h3 {
+    color: var(--yellow);
+    font-size: 11pt;
+    margin: 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.stats {
+  grid-area: 2 / 1 / 4 / 2;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+
+  .stat {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3mm;
+
+    img {
+      width: 6.5mm;
+      height: auto;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0.5mm 0.35mm black);
+    }
+
+    span {
+      font-weight: bold;
+      font-size: 10pt;
+      line-height: 1;
+    }
+  }
+}
+
+.portrait {
+  grid-area: 2 / 2 / 3 / 3;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  box-shadow: 0 0 5mm rgba(0, 0, 0, 0.8) inset;
+
+  .typeBadge {
+    position: absolute;
+    top: 1.3mm;
+    left: 1.2mm;
+    height: 6mm;
+    width: auto;
+    color: var(--yellow);
+    filter: drop-shadow(0 0.25mm 0.5mm black);
+  }
+}
+
+.bankName {
+  grid-area: 3 / 2 / 4 / 3;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2mm;
+
+  span {
+    color: var(--yellow);
+    font-weight: bold;
+    font-size: 9pt;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.specialty {
+  grid-area: 4 / 1 / 5 / 3;
+
+  padding: 2mm;
+  font-size: 7.5pt;
+  letter-spacing: 0.025em;
+  line-height: 1.25em;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  img {
+    height: 1.2em;
+    margin: -0.2em;
+    position: relative;
+    top: 1.5px;
+  }
+}

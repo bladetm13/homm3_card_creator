@@ -28,6 +28,7 @@ import {
 } from "react-bootstrap";
 import styles from "./PrintModal.module.css";
 import { loadHeroes } from "@/lib/serializeHero";
+import { loadOrToast } from "@/lib/toast";
 import { CardMode, PrintFilter } from "@/lib/features/printModel";
 import clsx from "clsx";
 
@@ -101,8 +102,8 @@ export default function PrintModal({
               type="button"
               aria-label="Add hero"
               onClick={async () => {
-                const heroes = await loadHeroes();
-                dispatch(addHeroes(heroes));
+                const heroes = await loadOrToast(loadHeroes);
+                if (heroes) dispatch(addHeroes(heroes));
               }}
             >
               <FontAwesomeIcon icon={faPlus} />

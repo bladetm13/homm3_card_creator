@@ -1,0 +1,109 @@
+"use client";
+
+import {
+  AbilityCard as AbilityCardModel,
+  initialAbilityCard,
+} from "@/models/abilityCard";
+import { useCardInstances } from "@/hooks/cardInstances";
+import CardInstances from "./CardInstances";
+import { sendToPdf } from "@/lib/pdfQueue";
+import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+} from "react-bootstrap";
+import AbilityForm from "./AbilityForm";
+import AbilityCard from "./AbilityCard";
+import AbilityCardBack from "./AbilityCardBack";
+import clsx from "clsx";
+import styles from "./AbilityEditor.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faGears,
+  faMagnifyingGlass,
+  faDownload,
+  faUpload,
+} from "@fortawesome/free-solid-svg-icons";
+import { loadAbilityCard, saveAbilityCard } from "@/lib/serializeAbilityCard";
+import { loadOrToast } from "@/lib/toast";
+
+export default function AbilityEditor() {
+  const {
+    instances,
+    selected,
+    current: ability,
+    select,
+    add,
+    setCurrent: setAbility,
+  } = useCardInstances<AbilityCardModel>(initialAbilityCard);
+
+  return (
+    <div className={clsx("d-print-none", styles.editor)}>
+      <Card className={styles.properties}>
+        <CardHeader>
+          <h2>
+            <FontAwesomeIcon icon={faGears} /> Properties
+          </h2>
+        </CardHeader>
+        <CardBody>
+          <CardInstances
+            labels={instances.map((item) => String(item.name ?? ""))}
+            selected={selected}
+            onSelect={select}
+            onAdd={add}
+          />
+          <AbilityForm ability={ability} setAbility={(v) => setAbility(v)} />
+        </CardBody>
+        <CardFooter>
+          <div className="d-flex justify-content-start gap-2">
+            <Button
+              variant="primary"
+              onClick={async () => {
+                const ability = await loadOrToast(loadAbilityCard);
+
+                if (ability) setAbility(ability);
+              }}
+            >
+              <FontAwesomeIcon icon={faUpload} /> Open
+            </Button>
+            <Button
+              variant="success"
+              onClick={() => {
+                saveAbilityCard(ability);
+              }}
+            >
+              <FontAwesomeIcon icon={faDownload} /> Save
+            </Button>
+            <Button
+              variant="outline-success"
+              onClick={() =>
+                sendToPdf("ability", String(ability.name ?? ""), ability)
+              }
+            >
+              <FontAwesomeIcon icon={faFilePdf} /> Send to PDF
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
+
+      <Card className={styles.preview}>
+        <CardHeader>
+          <h2>
+            <FontAwesomeIcon icon={faMagnifyingGlass} /> Preview
+          </h2>
+        </CardHeader>
+        <CardBody>
+          <div className={styles.previewContainer}>
+            <div className={styles.previewRow}>
+              <AbilityCard ability={ability} />
+              <AbilityCardBack />
+            </div>
+          </div>
+        </CardBody>
+      </Card>
+    </div>
+  );
+}

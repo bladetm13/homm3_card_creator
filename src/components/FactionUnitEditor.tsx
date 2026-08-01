@@ -1,0 +1,106 @@
+"use client";
+
+import { FactionUnit, initialFactionUnit } from "@/models/factionUnit";
+import { useCardInstances } from "@/hooks/cardInstances";
+import CardInstances from "./CardInstances";
+import { sendToPdf } from "@/lib/pdfQueue";
+import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+} from "react-bootstrap";
+import FactionUnitForm from "./FactionUnitForm";
+import FactionUnitCard from "./FactionUnitCard";
+import FactionUnitCardPack from "./FactionUnitCardPack";
+import clsx from "clsx";
+import styles from "./FactionUnitEditor.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faGears,
+  faMagnifyingGlass,
+  faDownload,
+  faUpload,
+} from "@fortawesome/free-solid-svg-icons";
+import { loadFactionUnit, saveFactionUnit } from "@/lib/serializeFactionUnit";
+import { loadOrToast } from "@/lib/toast";
+
+export default function FactionUnitEditor() {
+  const {
+    instances,
+    selected,
+    current: unit,
+    select,
+    add,
+    setCurrent: setUnit,
+  } = useCardInstances<FactionUnit>(initialFactionUnit);
+
+  return (
+    <div className={clsx("d-print-none", styles.editor)}>
+      <Card className={styles.properties}>
+        <CardHeader>
+          <h2>
+            <FontAwesomeIcon icon={faGears} /> Properties
+          </h2>
+        </CardHeader>
+        <CardBody>
+          <CardInstances
+            labels={instances.map((item) => String(item.name ?? ""))}
+            selected={selected}
+            onSelect={select}
+            onAdd={add}
+          />
+          <FactionUnitForm unit={unit} setUnit={(v) => setUnit(v)} />
+        </CardBody>
+        <CardFooter>
+          <div className="d-flex justify-content-start gap-2">
+            <Button
+              variant="primary"
+              onClick={async () => {
+                const unit = await loadOrToast(loadFactionUnit);
+
+                if (unit) setUnit(unit);
+              }}
+            >
+              <FontAwesomeIcon icon={faUpload} /> Open
+            </Button>
+            <Button
+              variant="success"
+              onClick={() => {
+                saveFactionUnit(unit);
+              }}
+            >
+              <FontAwesomeIcon icon={faDownload} /> Save
+            </Button>
+            <Button
+              variant="outline-success"
+              onClick={() =>
+                sendToPdf("factionUnit", String(unit.name ?? ""), unit)
+              }
+            >
+              <FontAwesomeIcon icon={faFilePdf} /> Send to PDF
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
+
+      <Card className={styles.preview}>
+        <CardHeader>
+          <h2>
+            <FontAwesomeIcon icon={faMagnifyingGlass} /> Preview
+          </h2>
+        </CardHeader>
+        <CardBody>
+          <div className={styles.previewContainer}>
+            <div className={styles.previewRow}>
+              <FactionUnitCard unit={unit} />
+              <FactionUnitCardPack unit={unit} />
+            </div>
+          </div>
+        </CardBody>
+      </Card>
+    </div>
+  );
+}

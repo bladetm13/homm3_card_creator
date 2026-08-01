@@ -32,6 +32,17 @@ export default function WelcomeModal({
           rulebook, but is <b>not affiliated with Ubisoft or Archon Studio</b>{" "}
           in any way.
         </p>
+        <p>
+          This is a continuation of{" "}
+          <a
+            href="https://k-adam.github.io/Homm3_hero_creator/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            k-adam&apos;s original Hero Creator
+          </a>
+          , continued by Wololoeren.
+        </p>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="success" onClick={onHide}>

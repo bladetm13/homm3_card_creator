@@ -1,0 +1,113 @@
+.card {
+  font-family: var(--font-liberation-serif), "Times New Roman", Times, serif;
+  width: 62.5mm;
+  height: 87.9mm;
+  background: black;
+  background-image: url("@/assets/cards/spell-parchment.jpg");
+  background-size: 100% 100%;
+  position: relative;
+  margin: 0;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  text-shadow: 0 0.25mm 0.5mm black;
+
+  padding: 7mm 5mm 7.15mm 5mm;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  flex: 0 0 6.9mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  h3 {
+    color: var(--yellow);
+    /* The printed title is gold cut into a dark outline, not a drop shadow. */
+    text-shadow: 0 0 0.5mm #2a1a08, 0.25mm 0.25mm 0.35mm #2a1a08,
+      -0.25mm 0.25mm 0.35mm #2a1a08, 0.25mm -0.25mm 0.35mm #2a1a08,
+      -0.25mm -0.25mm 0.35mm #2a1a08;
+    font-size: 15pt;
+    margin: 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.icon {
+  flex: 0 0 24.1mm;
+  /* Drops the art and the school symbols together; the effect text is
+     bottom-anchored so it stays where it is. */
+  margin-top: 4.4mm;
+  position: relative;
+}
+
+/* Painted after the school symbols, so the art sits over them. */
+.art {
+  position: absolute;
+  inset: 0;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 0.5mm 1mm rgba(0, 0, 0, 0.6));
+}
+
+/* Source art is drawn for the bottom-left corner; other corners are mirrored.
+   Sized by height, not width — the four school symbols have very different
+   aspect ratios and the printed cards match on height. */
+.corner {
+  position: absolute;
+  height: 15mm;
+  width: auto;
+  filter: drop-shadow(0 0.35mm 0.35mm black);
+}
+
+/* Offsets from the art box: 3mm out top and bottom (6mm more separation
+   between the pairs) and 1.5mm in on each side (3mm less across). */
+.cornerTopLeft {
+  top: -5.6mm;
+  left: 1.5mm;
+  transform: scaleY(-1);
+}
+
+.cornerTopRight {
+  top: -5.6mm;
+  right: 1.5mm;
+  transform: scale(-1, -1);
+}
+
+.cornerBottomLeft {
+  bottom: -1.5mm;
+  left: 1.5mm;
+}
+
+.cornerBottomRight {
+  bottom: -1.5mm;
+  right: 1.5mm;
+  transform: scaleX(-1);
+}
+
+.effect {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  /* Bottom-anchored, like the printed cards: the closing line sits at a fixed
+     height on every spell and the power table grows upwards from it. This also
+     means long effects can never push off the bottom of the parchment. */
+  align-items: flex-end;
+  justify-content: center;
+  text-align: center;
+  /* Printed effect text is white; only the title and table glyphs are gold. */
+  font-size: 8pt;
+  line-height: 1.25em;
+
+  img {
+    height: 1.15em;
+    margin: -0.15em;
+    position: relative;
+    top: 1.5px;
+  }
+}

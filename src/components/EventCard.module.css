@@ -1,0 +1,80 @@
+.card {
+  font-family: var(--font-liberation-serif), "Times New Roman", Times, serif;
+  width: 87.9mm;
+  height: 62.5mm;
+  background: black;
+  background-image: url("@/assets/cards/event-parchment.jpg");
+  background-size: 100% 100%;
+  position: relative;
+  margin: 0;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  text-shadow: 0 0.25mm 0.5mm black;
+  /* Bands from stables.xcf (2900x2090 canvas). */
+  padding: 12.5mm 10.7mm 6mm 10.7mm;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  flex: 0 0 9.5mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2mm;
+
+  h3 {
+    color: var(--yellow);
+    font-size: 13pt;
+    font-style: italic;
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  img {
+    height: 5mm;
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  .flourishRight {
+    transform: scaleX(-1);
+  }
+}
+
+.flavor {
+  flex: 0 0 13mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 3mm;
+  font-style: italic;
+  font-size: 7.5pt;
+  line-height: 1.25em;
+  color: var(--yellow);
+}
+
+.effect {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 3mm;
+  font-size: 8.5pt;
+  line-height: 1.35em;
+
+  img {
+    height: 1.2em;
+    margin: -0.2em;
+    position: relative;
+    top: 1.5px;
+  }
+}

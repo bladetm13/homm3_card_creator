@@ -1,0 +1,78 @@
+.card {
+  font-family: var(--font-liberation-serif), "Times New Roman", Times, serif;
+  width: 62.5mm;
+  height: 87.9mm;
+  background: black;
+  position: relative;
+  margin: 0;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  text-shadow: 0 0.25mm 0.5mm black;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 2.7mm;
+    border-image: var(--border-image) 165 / 42px / 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+.inner {
+  position: absolute;
+  /* Bands from unlimitedSpellPower.xcf (2090x2900 canvas). */
+  inset: 3.7mm;
+  padding: 1.3mm;
+  background-image: url("@/assets/background/leather.png");
+  background-size: 200%;
+  background-position: center;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  flex: 0 0 12.1mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  h3 {
+    color: var(--yellow);
+    font-size: 14pt;
+    margin: 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.icon {
+  flex: 0 0 31mm;
+  margin-top: 0.3mm;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 0.5mm 1mm black);
+}
+
+.effect {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 3mm;
+  font-size: 8.5pt;
+  line-height: 1.3em;
+
+  img {
+    height: 1.2em;
+    margin: -0.2em;
+    position: relative;
+    top: 1.5px;
+  }
+}

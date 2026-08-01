@@ -2,6 +2,10 @@
 
 import HeroBoard from "./HeroBoard";
 import { useState } from "react";
+import { useCardInstances } from "@/hooks/cardInstances";
+import CardInstances from "./CardInstances";
+import { sendToPdf } from "@/lib/pdfQueue";
+import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { Hero, initialHero } from "@/models/hero";
 import HeroCards from "./HeroCards";
 import {
@@ -24,12 +28,20 @@ import {
   faGears,
 } from "@fortawesome/free-solid-svg-icons";
 import { loadHero, saveHero } from "@/lib/serializeHero";
+import { loadOrToast } from "@/lib/toast";
 import PrintModal from "./PrintModal";
 import { useAppDispatch } from "@/lib/hooks";
 import { addHero } from "@/lib/features/printSlice";
 
 export default function HeroEditor() {
-  const [hero, setHero] = useState<Hero>(initialHero);
+  const {
+    instances,
+    selected,
+    current: hero,
+    select,
+    add,
+    setCurrent: setHero,
+  } = useCardInstances<Hero>(initialHero);
   const [showPrintModal, setShowPrintModal] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
@@ -47,6 +59,12 @@ export default function HeroEditor() {
           </h2>
         </CardHeader>
         <CardBody>
+          <CardInstances
+            labels={instances.map((item) => String(item.name ?? ""))}
+            selected={selected}
+            onSelect={select}
+            onAdd={add}
+          />
           <Alert variant="warning" className="d-block d-md-none mb-0">
             This app works best on a desktop and may not display correctly on
             smaller screens.
@@ -62,9 +80,9 @@ export default function HeroEditor() {
             <Button
               variant="primary"
               onClick={async () => {
-                const hero = await loadHero();
+                const hero = await loadOrToast(loadHero);
 
-                setHero(hero);
+                if (hero) setHero(hero);
               }}
             >
               <FontAwesomeIcon icon={faUpload} /> Open
@@ -76,6 +94,12 @@ export default function HeroEditor() {
               }}
             >
               <FontAwesomeIcon icon={faDownload} /> Save
+            </Button>
+            <Button
+              variant="outline-success"
+              onClick={() => sendToPdf("hero", String(hero.name ?? ""), hero)}
+            >
+              <FontAwesomeIcon icon={faFilePdf} /> Send to PDF
             </Button>
           </div>
         </CardFooter>

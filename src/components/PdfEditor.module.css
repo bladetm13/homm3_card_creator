@@ -1,0 +1,10 @@
+.editor {
+  margin: 1rem;
+}
+
+@media screen and (min-width: 1200px) {
+  .editor {
+    width: 90%;
+    margin: 1rem auto;
+  }
+}

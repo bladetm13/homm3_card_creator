@@ -1,0 +1,98 @@
+.card {
+  font-family: var(--font-liberation-serif), "Times New Roman", Times, serif;
+  width: 87.9mm;
+  height: 62.5mm;
+  background: black;
+  position: relative;
+  margin: 0;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  text-shadow: 0 0.25mm 0.5mm black;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 2.7mm;
+    border-image: var(--border-image) 165 / 42px / 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+.inner {
+  position: absolute;
+  /* Bands from annoyingLizard.xcf (2900x2090 canvas): the printed card
+     carries a deep margin above the title and below the flavour line. */
+  inset: 3.6mm;
+  /* Source margins are deeper still, but the effect block needs the room. */
+  padding: 9.5mm 1.4mm 3.5mm;
+  background-image: url("@/assets/background/leather.png");
+  background-size: 200%;
+  background-position: center;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  flex: 0 0 12mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 6mm;
+
+  h3 {
+    color: var(--white);
+    font-size: 11pt;
+    font-weight: bold;
+    margin: 0;
+    line-height: 1.3em;
+  }
+}
+
+.effect {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 5mm;
+  font-size: 8.5pt;
+  line-height: 1.28em;
+
+  img {
+    height: 1.2em;
+    margin: -0.2em;
+    position: relative;
+    top: 1.5px;
+  }
+}
+
+.divider {
+  flex: 0 0 2mm;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 8mm;
+    right: 8mm;
+    top: 50%;
+    border-top: 0.3mm solid var(--border-light);
+  }
+}
+
+.flavor {
+  flex: 0 0 6.8mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 5mm;
+  font-style: italic;
+  font-size: 7.5pt;
+  line-height: 1.25em;
+  color: var(--yellow);
+}

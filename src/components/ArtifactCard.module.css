@@ -1,0 +1,111 @@
+.card {
+  font-family: var(--font-liberation-serif), "Times New Roman", Times, serif;
+  width: 62.5mm;
+  height: 87.9mm;
+  background: black;
+  position: relative;
+  margin: 0;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  text-shadow: 0 0.25mm 0.5mm black;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 2.7mm;
+    border-image: var(--border-image) 165 / 42px / 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+.inner {
+  position: absolute;
+  /* Bands measured from the angelWings source art (2090x2900 canvas):
+     leather panel sits 3.7mm in, content 5.0mm from the card edge. */
+  inset: 3.7mm;
+  padding: 1.3mm;
+  background-image: url("@/assets/background/leather.png");
+  background-size: 200%;
+  background-position: center;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  flex: 0 0 12.1mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2mm;
+  border: 0.3mm solid var(--border-light);
+  box-shadow: 0 0 2mm rgba(0, 0, 0, 0.7) inset;
+
+  h3 {
+    color: var(--yellow);
+    font-size: 13pt;
+    margin: 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.icon {
+  flex: 0 0 31mm;
+  margin-top: 0.3mm;
+  /* cover, so every artwork fills the box edge to edge at the same width */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 0.3mm solid var(--border-light);
+}
+
+.effect {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 3mm;
+  /* The source fits this block in 20mm; 8pt overran the measured band. */
+  font-size: 7pt;
+  line-height: 1.25em;
+
+  img {
+    height: 1.2em;
+    margin: -0.2em;
+    position: relative;
+    top: 1.5px;
+  }
+}
+
+.divider {
+  flex: 0 0 1.5mm;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 4mm;
+    right: 4mm;
+    top: 50%;
+    border-top: 0.3mm solid var(--border-light);
+  }
+}
+
+.flavor {
+  flex: 0 0 10.3mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 3mm;
+  font-style: italic;
+  font-size: 7pt;
+  line-height: 1.25em;
+  color: var(--yellow);
+}

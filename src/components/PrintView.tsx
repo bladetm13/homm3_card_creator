@@ -79,20 +79,6 @@ export default function PrintView() {
   }, [state]);
   return (
     <div ref={divRef}>
-      {showBoards(state)
-        ? pairs(state.heroes).map((heroes, li) => {
-            return (
-              <div className="portrait page" key={li}>
-                <div>
-                  {heroes.map((hero, hi) => (
-                    <HeroBoard hero={hero} key={hi} />
-                  ))}
-                </div>
-              </div>
-            );
-          })
-        : null}
-
       {showCards(state)
         ? getCardPrintList(state).map((pair, li) => {
             return (

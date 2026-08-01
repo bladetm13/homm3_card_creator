@@ -1,5 +1,5 @@
 .board {
-  font-family: "Times New Roman", Times, serif;
+  font-family: var(--font-liberation-serif), "Times New Roman", Times, serif;
   width: 134mm;
   height: 96mm;
   padding: calc(3mm + 2mm); /* Black outline + border */
