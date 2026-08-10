@@ -270,6 +270,53 @@ export const iconMap: Record<string, JSX.Element> = {
 
 type IconToken = keyof typeof iconMap;
 
+// Renders arbitrary text flanked by the same tapered wedge lines as the
+// ":or:" glyph, but with the text width (and thus the whole glyph's width)
+// scaling to fit the given string instead of being fixed to "OR".
+function renderDivide(text: string): React.ReactNode {
+  const wedgeWidth = 50;
+  const charWidth = 13;
+  const textPadding = 20;
+  const textWidth = Math.max(wedgeWidth, text.length * charWidth + textPadding);
+  const totalWidth = wedgeWidth * 2 + textWidth;
+  const leftWide = wedgeWidth;
+  const rightWide = wedgeWidth + textWidth;
+
+  return (
+    <svg
+      viewBox={`0 0 ${totalWidth} 14`}
+      aria-label={text}
+      className="textIcon"
+      style={{
+        height: "1.4mm",
+        width: "auto",
+        marginTop: "0.75mm",
+        marginBottom: "0.5mm",
+        overflow: "visible",
+      }}
+    >
+      <text
+        x={leftWide + textWidth / 2}
+        y="50%"
+        textAnchor="middle"
+        dominantBaseline="central"
+        fill="currentColor"
+        fontSize="20"
+      >
+        {text}
+      </text>
+      <polygon
+        points={`${leftWide},5.5 ${leftWide},8.5 0,7`}
+        fill="currentColor"
+      />
+      <polygon
+        points={`${rightWide},5.5 ${rightWide},8.5 ${totalWidth},7`}
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
 interface UnitStatProps {
   attack: number;
   defense: number;
@@ -296,7 +343,7 @@ export function textToComponent(
 ): React.ReactNode {
   // Digits are allowed so tokens can carry a quantity, e.g. :3_gold:.
   const re =
-    /(\*\*|:[a-z0-9_]+:|:stats{[\s;0-9]*}:|:spell{.*?(?=}:)}:|:scale{.*?(?=}:)}:|\n\#|\n)/g;
+    /(\*\*|:[a-z0-9_]+:|:stats{[\s;0-9]*}:|:spell{.*?(?=}:)}:|:scale{.*?(?=}:)}:|:divide{.*?(?=}:)}:|\n\#|\n)/g;
   let last = 0;
   let result: React.ReactNode = null;
 
@@ -477,6 +524,10 @@ export function textToComponent(
           <span className="text-danger">Scale must have 4 components</span>
         );
       }
+      last = tokEnd;
+    } else if (tok.startsWith(":divide{")) {
+      const divideText = tok.slice(8, -2);
+      append(renderDivide(divideText));
       last = tokEnd;
     } else if ((tok as IconToken) in iconMap) {
       append(iconMap[tok as IconToken]);

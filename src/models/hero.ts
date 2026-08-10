@@ -12,6 +12,7 @@ export interface CustomClass {
   statistics: Statistics;
   color: string;
   background: string;
+  specialtyLabel?: string;
 }
 
 export interface Hero {

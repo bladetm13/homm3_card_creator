@@ -157,6 +157,20 @@ export default function HeroForm({
               placeholder="Enter class name"
             />
           </Form.Group>
+          <Form.Group controlId="specialtyLabelInput" className="mb-3">
+            <Form.Label>Speciality label</Form.Label>
+            <Form.Control
+              type="text"
+              value={hero.customClass.specialtyLabel ?? "Specialty"}
+              onChange={(e) =>
+                updateCustomClass({
+                  ...(hero.customClass as CustomClass),
+                  specialtyLabel: e.target.value,
+                })
+              }
+              placeholder="Enter speciality label"
+            />
+          </Form.Group>
           <Form.Group controlId="customStats" className="mb-3">
             <Form.Label>Statistics</Form.Label>
             <Row>

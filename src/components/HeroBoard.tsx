@@ -78,7 +78,7 @@ export default function HeroBoard({ hero }: { hero: Hero }) {
             <img src={hero.ability.path}></img>
           </div>
           <div className={styles.specialty}>
-            <h4>Specialty</h4>
+            <h4>{hero.customClass?.specialtyLabel || "Specialty"}</h4>
             <img src={hero.specialty.path}></img>
             <h5>{hero.specialty.name}</h5>
           </div>
