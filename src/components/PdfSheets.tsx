@@ -49,7 +49,7 @@ export interface LoadedCard {
   payload: unknown;
 }
 
-type Shape = "portrait" | "landscape";
+type Shape = "portrait";
 
 /**
  * A front and its back, printed side by side. Cut the pair out as one piece
@@ -71,12 +71,35 @@ interface Pair {
 const PER_SHEET: Record<Shape, { cols: number; rows: number }> = {
   // A pair is 125mm x 87.9mm.
   portrait: { cols: 2, rows: 2 },
-  // A pair is 175.8mm x 62.5mm, so only one fits across.
-  landscape: { cols: 1, rows: 2 },
 };
 
 /** Heroes have no dedicated back component; they use the shared card back. */
 const GenericBack = AbilityCardBack;
+
+/**
+ * Astrologer and event cards are laid out landscape (87.9mm x 62.5mm) in
+ * their editor tab, but every other card pair glues along its long edge.
+ * Rotate them 90 degrees into a portrait footprint so they fold the same
+ * way as the rest of the deck.
+ */
+function Rotated({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ width: "62.5mm", height: "87.9mm", position: "relative" }}>
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          width: "87.9mm",
+          height: "62.5mm",
+          transform: "translate(-50%, -50%) rotate(90deg)",
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
 
 export function pairsFor(card: LoadedCard): Pair[] {
   const p = card.payload;
@@ -165,17 +188,33 @@ export function pairsFor(card: LoadedCard): Pair[] {
     case "astrologer":
       return [
         {
-          shape: "landscape",
-          front: <AstrologerCard astrologer={p as AstrologerCardModel} />,
-          back: <AstrologerCardBack />,
+          shape: "portrait",
+          front: (
+            <Rotated>
+              <AstrologerCard astrologer={p as AstrologerCardModel} />
+            </Rotated>
+          ),
+          back: (
+            <Rotated>
+              <AstrologerCardBack />
+            </Rotated>
+          ),
         },
       ];
     case "event":
       return [
         {
-          shape: "landscape",
-          front: <EventCard event={p as EventCardModel} />,
-          back: <EventCardBack />,
+          shape: "portrait",
+          front: (
+            <Rotated>
+              <EventCard event={p as EventCardModel} />
+            </Rotated>
+          ),
+          back: (
+            <Rotated>
+              <EventCardBack />
+            </Rotated>
+          ),
         },
       ];
   }
@@ -203,11 +242,8 @@ function boardSheetsFor(cards: LoadedCard[]): Hero[][] {
 
 function sheetsFor(cards: LoadedCard[]) {
   const pairs = cards.flatMap(pairsFor);
-  return (["portrait", "landscape"] as Shape[]).flatMap((shape) => {
-    const of = pairs.filter((pair) => pair.shape === shape);
-    const { cols, rows } = PER_SHEET[shape];
-    return chunk(of, cols * rows).map((page) => chunk(page, cols));
-  });
+  const { cols, rows } = PER_SHEET.portrait;
+  return chunk(pairs, cols * rows).map((page) => chunk(page, cols));
 }
 
 export default function PdfSheets({ cards }: { cards: LoadedCard[] }) {
