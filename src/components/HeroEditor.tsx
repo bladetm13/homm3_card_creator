@@ -1,7 +1,6 @@
 "use client";
 
 import HeroBoard from "./HeroBoard";
-import { useState } from "react";
 import { useCardInstances } from "@/hooks/cardInstances";
 import CardInstances from "./CardInstances";
 import { sendToPdf } from "@/lib/pdfQueue";
@@ -21,7 +20,6 @@ import clsx from "clsx";
 import styles from "./HeroEditor.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faPrint,
   faDownload,
   faUpload,
   faMagnifyingGlass,
@@ -29,9 +27,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { loadHero, saveHero } from "@/lib/serializeHero";
 import { loadOrToast } from "@/lib/toast";
-import PrintModal from "./PrintModal";
-import { useAppDispatch } from "@/lib/hooks";
-import { addHero } from "@/lib/features/printSlice";
 
 export default function HeroEditor() {
   const {
@@ -42,13 +37,6 @@ export default function HeroEditor() {
     add,
     setCurrent: setHero,
   } = useCardInstances<Hero>(initialHero);
-  const [showPrintModal, setShowPrintModal] = useState<boolean>(false);
-
-  const dispatch = useAppDispatch();
-  const displayPrintModal = () => {
-    setShowPrintModal(true);
-    dispatch(addHero(hero));
-  };
 
   return (
     <div className={clsx("d-print-none", styles.editor)}>
@@ -74,9 +62,6 @@ export default function HeroEditor() {
         </CardBody>
         <CardFooter>
           <div className="d-flex justify-content-start gap-2">
-            <Button variant="secondary" onClick={displayPrintModal}>
-              <FontAwesomeIcon icon={faPrint} /> Print
-            </Button>
             <Button
               variant="primary"
               onClick={async () => {
@@ -104,11 +89,6 @@ export default function HeroEditor() {
           </div>
         </CardFooter>
       </Card>
-
-      <PrintModal
-        show={showPrintModal}
-        onHide={() => setShowPrintModal(false)}
-      />
 
       <Card className={styles.preview}>
         <CardHeader>

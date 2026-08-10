@@ -195,6 +195,21 @@
   }
 }
 
+/* Matches the "# PACK" band's typography — used by a reinforcement box's
+   free-text field in More Reinforcements format. min-width lets it shrink
+   inside the flex row so long text ellipses instead of spilling out. */
+.reinforcementText {
+  color: var(--yellow);
+  font-weight: bold;
+  font-size: 12pt;
+  letter-spacing: 0.1em;
+  text-align: center;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .specialty {
   grid-area: 4 / 1 / 5 / 3;
 

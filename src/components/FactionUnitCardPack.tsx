@@ -1,13 +1,23 @@
 "use client";
 
-import { FactionUnit } from "@/models/factionUnit";
+import {
+  DEFAULT_BACK_REINFORCEMENT_TEXT,
+  FactionUnit,
+  PriceGlyph,
+} from "@/models/factionUnit";
 import { UnitTier } from "@/models/unit";
 import { townColors } from "@/models/color";
 import styles from "./FactionUnitCard.module.css";
 import clsx from "clsx";
 import { textToComponent } from "@/lib/textToComponent";
 import { useBackground, useBorder } from "@/hooks/background";
+import { colord } from "colord";
 import { TypeBadge } from "./FactionUnitCard";
+
+import GoldIcon from "@/assets/glyphsInternal/price-icons/gold.png";
+import ValuableIcon from "@/assets/glyphsInternal/price-icons/valuables.png";
+import PayIcon from "@/assets/glyphsInternal/price-icons/pay.png";
+import ReinforceIcon from "@/assets/glyphs/reinforce.svg";
 
 import BronzeStar from "@/assets/glyphsInternal/tier-stars/bronze.png";
 import SilverStar from "@/assets/glyphsInternal/tier-stars/silver.png";
@@ -23,9 +33,19 @@ const tierStars: Record<UnitTier, { src: string }> = {
 
 export default function FactionUnitCardPack({ unit }: { unit: FactionUnit }) {
   const tierStar = tierStars[unit.tier];
-  const borderUrl = useBorder(townColors[unit.town].color);
-  const tintUrl = useBackground("#6c5e38");
-  const tintDarkUrl = useBackground("#3c3321");
+  const townColor = townColors[unit.town];
+  const borderUrl = useBorder(unit.borderColor ?? townColor.color);
+  // Panels default to the same brown used before custom colours existed —
+  // only the border follows the town by default. The specialty panel is a
+  // shade deeper; the printed cards separate the two bands that way.
+  const panelColor = unit.backgroundColor ?? "#6c5e38";
+  const tintUrl = useBackground(panelColor);
+  const tintDarkUrl = useBackground(colord(panelColor).darken(0.1).toHex());
+  // The back mirrors the front unless it has been given its own identity.
+  const name = unit.separateBackFace ? (unit.backName ?? unit.name) : unit.name;
+  const portrait = unit.separateBackFace
+    ? (unit.backPortrait ?? unit.portrait)
+    : unit.portrait;
 
   return (
     <div
@@ -39,7 +59,7 @@ export default function FactionUnitCardPack({ unit }: { unit: FactionUnit }) {
       }
     >
       <div className={clsx(styles.block, styles.tint, styles.title)}>
-        <h3>{unit.name}</h3>
+        <h3>{name}</h3>
         <img
           src={tierStar.src}
           className={styles.tierStar}
@@ -48,19 +68,19 @@ export default function FactionUnitCardPack({ unit }: { unit: FactionUnit }) {
       </div>
 
       <div className={clsx(styles.stats, styles.statsAloneRow)}>
-        <div className={clsx(styles.block, styles.leather, styles.stat)}>
+        <div className={clsx(styles.block, styles.tint, styles.stat)}>
           <img src="images/attack.png" alt="Attack" />
           <span>{unit.pack.attack}</span>
         </div>
-        <div className={clsx(styles.block, styles.leather, styles.stat)}>
+        <div className={clsx(styles.block, styles.tint, styles.stat)}>
           <img src="images/defense.png" alt="Defense" />
           <span>{unit.pack.defense}</span>
         </div>
-        <div className={clsx(styles.block, styles.leather, styles.stat)}>
+        <div className={clsx(styles.block, styles.tint, styles.stat)}>
           <img src="images/hp.png" alt="Health" />
           <span>{unit.pack.health}</span>
         </div>
-        <div className={clsx(styles.block, styles.leather, styles.stat)}>
+        <div className={clsx(styles.block, styles.tint, styles.stat)}>
           <img src="images/initiative.png" alt="Initiative" />
           <span>{unit.pack.initiative}</span>
         </div>
@@ -68,14 +88,44 @@ export default function FactionUnitCardPack({ unit }: { unit: FactionUnit }) {
 
       <div
         className={clsx(styles.block, styles.portrait)}
-        style={{ backgroundImage: `url("${unit.portrait.path}")` }}
+        style={{ backgroundImage: `url("${portrait.path}")` }}
       >
         <TypeBadge type={unit.pack.type} />
       </div>
 
-      <div className={clsx(styles.block, styles.tint, styles.packBand)}>
-        <span># PACK</span>
-      </div>
+      {unit.moreReinforcements ? (
+        // Same two-box row as the front, but priced from the reinforce cost.
+        <div className={clsx(styles.block, styles.tint, styles.costRow)}>
+          <div className={styles.costBox}>
+            {(unit.backPriceGlyph ?? PriceGlyph.Reinforce) ===
+            PriceGlyph.Pay ? (
+              <img src={PayIcon.src} alt="Pay" />
+            ) : (
+              <ReinforceIcon aria-label="Reinforce" />
+            )}
+            <img src={GoldIcon.src} alt="Gold" />
+            <span>{unit.reinforceCost.gold}</span>
+            {unit.reinforceCost.valuables > 0 ? (
+              <>
+                <img src={ValuableIcon.src} alt="Valuables" />
+                <span>{unit.reinforceCost.valuables}</span>
+              </>
+            ) : null}
+          </div>
+          <div className={styles.costDivider} />
+          <div className={styles.costBox}>
+            {/* Rendered literally, not through textToComponent: the default
+                "#PACK" starts with a #, which that parser reads as a heading. */}
+            <span className={styles.reinforcementText}>
+              {unit.backReinforcementText ?? DEFAULT_BACK_REINFORCEMENT_TEXT}
+            </span>
+          </div>
+        </div>
+      ) : (
+        <div className={clsx(styles.block, styles.tint, styles.packBand)}>
+          <span># PACK</span>
+        </div>
+      )}
 
       <div className={clsx(styles.block, styles.tintDark, styles.specialty)}>
         <div>{textToComponent(unit.packSpecialty)}</div>

@@ -1,15 +1,21 @@
 "use client";
 
-import { FactionUnit } from "@/models/factionUnit";
+import {
+  DEFAULT_FRONT_REINFORCEMENT_TEXT,
+  FactionUnit,
+  PriceGlyph,
+} from "@/models/factionUnit";
 import { UnitTier, UnitType } from "@/models/unit";
 import { townColors } from "@/models/color";
 import styles from "./FactionUnitCard.module.css";
 import clsx from "clsx";
 import { textToComponent } from "@/lib/textToComponent";
 import { useBackground, useBorder } from "@/hooks/background";
+import { colord } from "colord";
 
 import GoldIcon from "@/assets/glyphsInternal/price-icons/gold.png";
 import ValuableIcon from "@/assets/glyphsInternal/price-icons/valuables.png";
+import PayIcon from "@/assets/glyphsInternal/price-icons/pay.png";
 import RecruitIcon from "@/assets/glyphsInternal/recruit.svg";
 import ReinforceIcon from "@/assets/glyphs/reinforce.svg";
 
@@ -54,9 +60,14 @@ export function TypeBadge({ type }: { type: UnitType }) {
 
 export default function FactionUnitCard({ unit }: { unit: FactionUnit }) {
   const tierStar = tierStars[unit.tier];
-  const borderUrl = useBorder(townColors[unit.town].color);
-  const tintUrl = useBackground("#6c5e38");
-  const tintDarkUrl = useBackground("#3c3321");
+  const townColor = townColors[unit.town];
+  const borderUrl = useBorder(unit.borderColor ?? townColor.color);
+  // Panels default to the same brown used before custom colours existed —
+  // only the border follows the town by default. The specialty panel is a
+  // shade deeper; the printed cards separate the two bands that way.
+  const panelColor = unit.backgroundColor ?? "#6c5e38";
+  const tintUrl = useBackground(panelColor);
+  const tintDarkUrl = useBackground(colord(panelColor).darken(0.1).toHex());
 
   return (
     <div
@@ -79,19 +90,19 @@ export default function FactionUnitCard({ unit }: { unit: FactionUnit }) {
       </div>
 
       <div className={clsx(styles.stats, styles.statsAloneRow)}>
-        <div className={clsx(styles.block, styles.leather, styles.stat)}>
+        <div className={clsx(styles.block, styles.tint, styles.stat)}>
           <img src="images/attack.png" alt="Attack" />
           <span>{unit.few.attack}</span>
         </div>
-        <div className={clsx(styles.block, styles.leather, styles.stat)}>
+        <div className={clsx(styles.block, styles.tint, styles.stat)}>
           <img src="images/defense.png" alt="Defense" />
           <span>{unit.few.defense}</span>
         </div>
-        <div className={clsx(styles.block, styles.leather, styles.stat)}>
+        <div className={clsx(styles.block, styles.tint, styles.stat)}>
           <img src="images/hp.png" alt="Health" />
           <span>{unit.few.health}</span>
         </div>
-        <div className={clsx(styles.block, styles.leather, styles.stat)}>
+        <div className={clsx(styles.block, styles.tint, styles.stat)}>
           <img src="images/initiative.png" alt="Initiative" />
           <span>{unit.few.initiative}</span>
         </div>
@@ -106,7 +117,18 @@ export default function FactionUnitCard({ unit }: { unit: FactionUnit }) {
 
       <div className={clsx(styles.block, styles.tint, styles.costRow)}>
         <div className={styles.costBox}>
-          <RecruitIcon aria-label="Recruitment cost" />
+          {/* In More Reinforcements format the front prices from the recruit
+              cost with a glyph of the author's choosing; otherwise it keeps
+              the fixed recruit glyph. */}
+          {unit.moreReinforcements ? (
+            (unit.frontPriceGlyph ?? PriceGlyph.Pay) === PriceGlyph.Pay ? (
+              <img src={PayIcon.src} alt="Pay" />
+            ) : (
+              <ReinforceIcon aria-label="Reinforce" />
+            )
+          ) : (
+            <RecruitIcon aria-label="Recruitment cost" />
+          )}
           <img src={GoldIcon.src} alt="Gold" />
           <span>{unit.recruitCost.gold}</span>
           {unit.recruitCost.valuables > 0 ? (
@@ -118,15 +140,25 @@ export default function FactionUnitCard({ unit }: { unit: FactionUnit }) {
         </div>
         <div className={styles.costDivider} />
         <div className={styles.costBox}>
-          <ReinforceIcon aria-label="Reinforcement cost" />
-          <img src={GoldIcon.src} alt="Gold" />
-          <span>{unit.reinforceCost.gold}</span>
-          {unit.reinforceCost.valuables > 0 ? (
+          {unit.moreReinforcements ? (
+            // Rendered literally, not through textToComponent: the default
+            // "#FEW" starts with a #, which that parser reads as a heading.
+            <span className={styles.reinforcementText}>
+              {unit.frontReinforcementText ?? DEFAULT_FRONT_REINFORCEMENT_TEXT}
+            </span>
+          ) : (
             <>
-              <img src={ValuableIcon.src} alt="Valuables" />
-              <span>{unit.reinforceCost.valuables}</span>
+              <ReinforceIcon aria-label="Reinforcement cost" />
+              <img src={GoldIcon.src} alt="Gold" />
+              <span>{unit.reinforceCost.gold}</span>
+              {unit.reinforceCost.valuables > 0 ? (
+                <>
+                  <img src={ValuableIcon.src} alt="Valuables" />
+                  <span>{unit.reinforceCost.valuables}</span>
+                </>
+              ) : null}
             </>
-          ) : null}
+          )}
         </div>
       </div>
 
