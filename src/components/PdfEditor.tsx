@@ -1,6 +1,13 @@
 "use client";
 
-import { Button, Card, CardBody, CardHeader, Table } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Form,
+  Table,
+} from "react-bootstrap";
 import clsx from "clsx";
 import { fileOpen } from "browser-fs-access";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -93,9 +100,13 @@ async function pickCardFiles(): Promise<PickedCard[] | null> {
 export default function PdfEditor({
   cards,
   setCards,
+  cropped,
+  setCropped,
 }: {
   cards: LoadedCard[];
   setCards: (cards: LoadedCard[]) => void;
+  cropped: boolean;
+  setCropped: (cropped: boolean) => void;
 }) {
   const addFiles = async () => {
     const picked = await pickCardFiles();
@@ -133,7 +144,7 @@ export default function PdfEditor({
     setCards(cards.filter((card) => card.id !== id));
 
   const faceCount = cards.reduce((n, card) => n + pairsFor(card).length, 0);
-  const sheets = sheetCount(cards);
+  const sheets = sheetCount(cards, cropped);
   const boards = boardCount(cards);
 
   return (
@@ -179,6 +190,27 @@ export default function PdfEditor({
               <FontAwesomeIcon icon={faTrash} /> Clear
             </Button>
           </div>
+
+          <Form.Check
+            type="switch"
+            id="pdf-cropped"
+            className="mb-3"
+            checked={cropped}
+            onChange={(e) => setCropped(e.currentTarget.checked)}
+            label={
+              <>
+                Cropped pages
+                <span className="text-muted">
+                  {" "}
+                  — one card pair (or board) per page, blown up to fill the
+                  whole sheet. No white border anywhere, but the cards come out
+                  A4-sized, so print or cut them down to scale. Set the print
+                  dialog&apos;s margins to <em>None</em> and turn off{" "}
+                  <em>Fit to page</em>.
+                </span>
+              </>
+            }
+          />
 
           {cards.length ? (
             <>

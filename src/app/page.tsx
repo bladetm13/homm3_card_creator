@@ -47,6 +47,7 @@ export default function Home() {
   // Held here rather than inside PdfEditor: the printable sheets have to
   // render outside the d-print-none wrapper around the tabs.
   const [pdfCards, setPdfCards] = useState<LoadedCard[]>([]);
+  const [pdfCropped, setPdfCropped] = useState(false);
   const [ready, setReady] = useState(false);
   useEffect(() => setReady(true), []);
 
@@ -194,14 +195,23 @@ export default function Home() {
               </>
             }
           >
-            <PdfEditor cards={pdfCards} setCards={setPdfCards} />
+            <PdfEditor
+              cards={pdfCards}
+              setCards={setPdfCards}
+              cropped={pdfCropped}
+              setCropped={setPdfCropped}
+            />
           </Tab>
         </Tabs>
       </div>
       <div
         className={activeTab === "pdf" ? "printOnly" : "d-none d-print-block"}
       >
-        {activeTab === "pdf" ? <PdfSheets cards={pdfCards} /> : <PrintView />}
+        {activeTab === "pdf" ? (
+          <PdfSheets cards={pdfCards} cropped={pdfCropped} />
+        ) : (
+          <PrintView />
+        )}
       </div>
       <WelcomeModal
         show={!welcomeMessageAccepted && ready}

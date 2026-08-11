@@ -246,7 +246,45 @@ function sheetsFor(cards: LoadedCard[]) {
   return chunk(pairs, cols * rows).map((page) => chunk(page, cols));
 }
 
-export default function PdfSheets({ cards }: { cards: LoadedCard[] }) {
+/**
+ * Cropped output: one pair (or one board) per page, on a page sized to fit it
+ * exactly. Nothing is laid out on A4, so there is no white border to trim.
+ */
+function CroppedSheets({ cards }: { cards: LoadedCard[] }) {
+  return (
+    <div style={{ ["--adjust-scale" as string]: "1" }}>
+      {cards.flatMap(pairsFor).map((pair, pi) => (
+        <div className="cropPair page" key={pi}>
+          <div>
+            {/* Front and back butt together; the join is the fold line. */}
+            <div style={{ display: "flex" }}>
+              {pair.front}
+              {pair.back}
+            </div>
+          </div>
+        </div>
+      ))}
+
+      {heroesIn(cards).map((hero, bi) => (
+        <div className="cropBoard page" key={`board-${bi}`}>
+          <div>
+            <HeroBoard hero={hero} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default function PdfSheets({
+  cards,
+  cropped = false,
+}: {
+  cards: LoadedCard[];
+  cropped?: boolean;
+}) {
+  if (cropped) return <CroppedSheets cards={cards} />;
+
   const cardSheets = sheetsFor(cards);
   return (
     <div style={{ ["--adjust-scale" as string]: "1" }}>
@@ -284,7 +322,12 @@ export default function PdfSheets({ cards }: { cards: LoadedCard[] }) {
   );
 }
 
-export function sheetCount(cards: LoadedCard[]): number {
+export function sheetCount(cards: LoadedCard[], cropped = false): number {
+  if (cropped)
+    return (
+      cards.reduce((n, card) => n + pairsFor(card).length, 0) +
+      heroesIn(cards).length
+    );
   return sheetsFor(cards).length + boardSheetsFor(cards).length;
 }
 
