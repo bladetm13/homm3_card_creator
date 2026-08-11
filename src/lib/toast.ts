@@ -1,6 +1,10 @@
+/** Toasts started out as failures only, so "error" stays the default. */
+export type ToastTone = "error" | "success";
+
 export interface ToastMessage {
   id: number;
   text: string;
+  tone: ToastTone;
 }
 
 type Listener = (toast: ToastMessage) => void;
@@ -14,8 +18,8 @@ export function onToast(listener: Listener): () => void {
   return () => listeners.delete(listener);
 }
 
-export function showToast(text: string) {
-  const toast = { id: nextId++, text };
+export function showToast(text: string, tone: ToastTone = "error") {
+  const toast = { id: nextId++, text, tone };
   listeners.forEach((listener) => listener(toast));
 }
 

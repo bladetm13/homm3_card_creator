@@ -34,8 +34,9 @@ export default function FactionUnitEditor() {
     current: unit,
     select,
     add,
+    append,
     setCurrent: setUnit,
-  } = useCardInstances<FactionUnit>(initialFactionUnit);
+  } = useCardInstances<FactionUnit>(initialFactionUnit, "factionUnit");
 
   return (
     <div className={clsx("d-print-none", styles.editor)}>
@@ -61,7 +62,7 @@ export default function FactionUnitEditor() {
               onClick={async () => {
                 const unit = await loadOrToast(loadFactionUnit);
 
-                if (unit) setUnit(unit);
+                if (unit) append([unit]);
               }}
             >
               <FontAwesomeIcon icon={faUpload} /> Open

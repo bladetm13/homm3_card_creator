@@ -40,8 +40,9 @@ export default function AstrologerEditor() {
     current: astrologer,
     select,
     add,
+    append,
     setCurrent: setAstrologer,
-  } = useCardInstances<AstrologerCardModel>(initialAstrologerCard);
+  } = useCardInstances<AstrologerCardModel>(initialAstrologerCard, "astrologer");
 
   return (
     <div className={clsx("d-print-none", styles.editor)}>
@@ -70,7 +71,7 @@ export default function AstrologerEditor() {
               onClick={async () => {
                 const astrologer = await loadOrToast(loadAstrologerCard);
 
-                if (astrologer) setAstrologer(astrologer);
+                if (astrologer) append([astrologer]);
               }}
             >
               <FontAwesomeIcon icon={faUpload} /> Open

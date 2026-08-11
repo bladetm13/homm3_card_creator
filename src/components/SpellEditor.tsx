@@ -37,8 +37,9 @@ export default function SpellEditor() {
     current: spell,
     select,
     add,
+    append,
     setCurrent: setSpell,
-  } = useCardInstances<SpellCardModel>(initialSpellCard);
+  } = useCardInstances<SpellCardModel>(initialSpellCard, "spell");
 
   return (
     <div className={clsx("d-print-none", styles.editor)}>
@@ -64,7 +65,7 @@ export default function SpellEditor() {
               onClick={async () => {
                 const spell = await loadOrToast(loadSpellCard);
 
-                if (spell) setSpell(spell);
+                if (spell) append([spell]);
               }}
             >
               <FontAwesomeIcon icon={faUpload} /> Open

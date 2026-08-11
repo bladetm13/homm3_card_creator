@@ -22,13 +22,15 @@ export default function Toaster() {
       {toasts.map((toast) => (
         <Toast
           key={toast.id}
-          bg="danger"
+          bg={toast.tone === "success" ? "success" : "danger"}
           onClose={() => dismiss(toast.id)}
           delay={AUTOHIDE_MS}
           autohide
         >
           <Toast.Header>
-            <strong className="me-auto">Could not open file</strong>
+            <strong className="me-auto">
+              {toast.tone === "success" ? "Done" : "Could not open file"}
+            </strong>
           </Toast.Header>
           <Toast.Body className="text-white">{toast.text}</Toast.Body>
         </Toast>

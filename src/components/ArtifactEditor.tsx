@@ -40,8 +40,9 @@ export default function ArtifactEditor() {
     current: artifact,
     select,
     add,
+    append,
     setCurrent: setArtifact,
-  } = useCardInstances<ArtifactCardModel>(initialArtifactCard);
+  } = useCardInstances<ArtifactCardModel>(initialArtifactCard, "artifact");
 
   return (
     <div className={clsx("d-print-none", styles.editor)}>
@@ -70,7 +71,7 @@ export default function ArtifactEditor() {
               onClick={async () => {
                 const artifact = await loadOrToast(loadArtifactCard);
 
-                if (artifact) setArtifact(artifact);
+                if (artifact) append([artifact]);
               }}
             >
               <FontAwesomeIcon icon={faUpload} /> Open

@@ -37,8 +37,9 @@ export default function MoraleEditor() {
     current: morale,
     select,
     add,
+    append,
     setCurrent: setMorale,
-  } = useCardInstances<MoraleCardModel>(initialMoraleCard);
+  } = useCardInstances<MoraleCardModel>(initialMoraleCard, "morale");
 
   return (
     <div className={clsx("d-print-none", styles.editor)}>
@@ -64,7 +65,7 @@ export default function MoraleEditor() {
               onClick={async () => {
                 const morale = await loadOrToast(loadMoraleCard);
 
-                if (morale) setMorale(morale);
+                if (morale) append([morale]);
               }}
             >
               <FontAwesomeIcon icon={faUpload} /> Open

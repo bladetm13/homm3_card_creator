@@ -37,8 +37,9 @@ export default function EventEditor() {
     current: event,
     select,
     add,
+    append,
     setCurrent: setEvent,
-  } = useCardInstances<EventCardModel>(initialEventCard);
+  } = useCardInstances<EventCardModel>(initialEventCard, "event");
 
   return (
     <div className={clsx("d-print-none", styles.editor)}>
@@ -64,7 +65,7 @@ export default function EventEditor() {
               onClick={async () => {
                 const event = await loadOrToast(loadEventCard);
 
-                if (event) setEvent(event);
+                if (event) append([event]);
               }}
             >
               <FontAwesomeIcon icon={faUpload} /> Open

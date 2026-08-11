@@ -35,8 +35,9 @@ export default function HeroEditor() {
     current: hero,
     select,
     add,
+    append,
     setCurrent: setHero,
-  } = useCardInstances<Hero>(initialHero);
+  } = useCardInstances<Hero>(initialHero, "hero");
 
   return (
     <div className={clsx("d-print-none", styles.editor)}>
@@ -67,7 +68,7 @@ export default function HeroEditor() {
               onClick={async () => {
                 const hero = await loadOrToast(loadHero);
 
-                if (hero) setHero(hero);
+                if (hero) append([hero]);
               }}
             >
               <FontAwesomeIcon icon={faUpload} /> Open

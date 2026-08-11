@@ -37,8 +37,9 @@ export default function PandoraEditor() {
     current: pandora,
     select,
     add,
+    append,
     setCurrent: setPandora,
-  } = useCardInstances<PandoraCardModel>(initialPandoraCard);
+  } = useCardInstances<PandoraCardModel>(initialPandoraCard, "pandora");
 
   return (
     <div className={clsx("d-print-none", styles.editor)}>
@@ -65,7 +66,7 @@ export default function PandoraEditor() {
               onClick={async () => {
                 const pandora = await loadOrToast(loadPandoraCard);
 
-                if (pandora) setPandora(pandora);
+                if (pandora) append([pandora]);
               }}
             >
               <FontAwesomeIcon icon={faUpload} /> Open

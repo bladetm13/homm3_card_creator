@@ -6,13 +6,15 @@ import { fileOpen } from "browser-fs-access";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFilePdf,
+  faFileImport,
   faTrash,
   faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 
 import styles from "./PdfEditor.module.css";
 import { LoadedCard, boardCount, pairsFor, sheetCount } from "./PdfSheets";
-import { CardKey, parseCardFile } from "@/lib/detectCardFile";
+import { CardKey, ParsedCardFile, parseCardFile } from "@/lib/detectCardFile";
+import { importToEditors } from "@/lib/editorQueue";
 import { showToast } from "@/lib/toast";
 
 const LABELS: Record<CardKey, string> = {
@@ -37,6 +39,57 @@ function nameOf(payload: unknown, fallback: string): string {
 
 let nextId = 0;
 
+interface PickedCard extends ParsedCardFile {
+  /** The file's own name, used when the card itself carries none. */
+  fileName: string;
+}
+
+/**
+ * Asks for card files and parses them. Resolves to null when the picker was
+ * cancelled; files that are not readable cards are reported and left out.
+ */
+async function pickCardFiles(): Promise<PickedCard[] | null> {
+  let blobs;
+  try {
+    blobs = await fileOpen({
+      mimeTypes: ["application/json"],
+      extensions: [".json"],
+      description: "Hero Creator cards",
+      multiple: true,
+    });
+  } catch (error) {
+    // Cancelling the picker is not a failure.
+    if (error instanceof DOMException && error.name === "AbortError") {
+      return null;
+    }
+    throw error;
+  }
+
+  const picked: PickedCard[] = [];
+  const failed: string[] = [];
+
+  for (const blob of blobs) {
+    try {
+      const parsed = parseCardFile(await blob.text());
+      picked.push({ ...parsed, fileName: blob.name.replace(/\.json$/i, "") });
+    } catch (error) {
+      failed.push(
+        `${blob.name}: ${error instanceof Error ? error.message : "unreadable"}`,
+      );
+    }
+  }
+
+  if (failed.length) {
+    showToast(
+      `Skipped ${failed.length} file${failed.length > 1 ? "s" : ""} — ${failed
+        .slice(0, 3)
+        .join("; ")}`,
+    );
+  }
+
+  return picked;
+}
+
 export default function PdfEditor({
   cards,
   setCards,
@@ -45,46 +98,34 @@ export default function PdfEditor({
   setCards: (cards: LoadedCard[]) => void;
 }) {
   const addFiles = async () => {
-    let blobs;
-    try {
-      blobs = await fileOpen({
-        mimeTypes: ["application/json"],
-        extensions: [".json"],
-        description: "Hero Creator cards",
-        multiple: true,
-      });
-    } catch (error) {
-      // Cancelling the picker is not a failure.
-      if (error instanceof DOMException && error.name === "AbortError") return;
-      throw error;
-    }
+    const picked = await pickCardFiles();
+    if (!picked?.length) return;
 
-    const added: LoadedCard[] = [];
-    const failed: string[] = [];
+    setCards([
+      ...cards,
+      ...picked.map(({ key, payload, fileName }) => ({
+        id: nextId++,
+        key,
+        name: nameOf(payload, fileName),
+        payload,
+      })),
+    ]);
+  };
 
-    for (const blob of blobs) {
-      try {
-        const { key, payload } = parseCardFile(await blob.text());
-        added.push({
-          id: nextId++,
-          key,
-          name: nameOf(payload, blob.name.replace(/\.json$/i, "")),
-          payload,
-        });
-      } catch (error) {
-        failed.push(
-          `${blob.name}: ${error instanceof Error ? error.message : "unreadable"}`,
-        );
-      }
-    }
+  const importToTabs = async () => {
+    const picked = await pickCardFiles();
+    if (!picked?.length) return;
 
-    if (added.length) setCards([...cards, ...added]);
-    if (failed.length) {
+    const imported = importToEditors(picked);
+    const skipped = picked.length - imported;
+    if (imported) {
       showToast(
-        `Skipped ${failed.length} file${failed.length > 1 ? "s" : ""} — ${failed
-          .slice(0, 3)
-          .join("; ")}`,
+        `Imported ${imported} card${imported > 1 ? "s" : ""} into their tabs` +
+          (skipped ? ` — ${skipped} had no editor` : ""),
+        "success",
       );
+    } else {
+      showToast("Nothing could be imported.");
     }
   };
 
@@ -110,12 +151,17 @@ export default function PdfEditor({
             pair out as one piece and fold along the join for a double-sided
             card. Hero boards are printed on their own sheets at the end.
             Everything goes to your browser&apos;s print dialog, where you can
-            choose <em>Save as PDF</em>.
+            choose <em>Save as PDF</em>. To edit a pile of files instead of
+            printing it, <em>Bulk import to editors</em> sends each one to the
+            tab that edits that kind of card.
           </p>
 
           <div className="d-flex gap-2 mb-3">
             <Button variant="primary" onClick={addFiles}>
               <FontAwesomeIcon icon={faUpload} /> Add card files
+            </Button>
+            <Button variant="outline-primary" onClick={importToTabs}>
+              <FontAwesomeIcon icon={faFileImport} /> Bulk import to editors
             </Button>
             <Button
               variant="success"

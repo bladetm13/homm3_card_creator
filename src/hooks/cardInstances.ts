@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+import { CardKey } from "@/lib/detectCardFile";
+import { onEditorImport } from "@/lib/editorQueue";
 
 export interface CardInstances<T> {
   instances: T[];
@@ -9,15 +12,25 @@ export interface CardInstances<T> {
   add: () => void;
   /** Replaces the selected card. */
   setCurrent: (value: T) => void;
-  /** Replaces the whole list, e.g. after opening a file. */
-  replaceCurrent: (value: T) => void;
+  /**
+   * Appends cards and switches to the first of them. Opening files never
+   * overwrites what the editor is already holding.
+   */
+  append: (values: T[]) => void;
 }
 
 /**
  * Lets an editor hold several cards at once while every existing control keeps
- * working on just one of them. Open, Save and Send to PDF all act on `current`.
+ * working on just one of them. Save and Send to PDF act on `current`; opening
+ * files adds to the list instead.
+ *
+ * Passing the editor's `cardKey` subscribes it to the PDF tab's bulk import, so
+ * files of that type land here as extra instances.
  */
-export function useCardInstances<T>(initial: T): CardInstances<T> {
+export function useCardInstances<T>(
+  initial: T,
+  cardKey?: CardKey,
+): CardInstances<T> {
   const [instances, setInstances] = useState<T[]>([initial]);
   const [selected, setSelected] = useState(0);
 
@@ -37,6 +50,19 @@ export function useCardInstances<T>(initial: T): CardInstances<T> {
       return [...list, copy];
     });
 
+  const append = useCallback((values: T[]) => {
+    if (!values.length) return;
+    setInstances((list) => {
+      setSelected(list.length);
+      return [...list, ...values];
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!cardKey) return;
+    return onEditorImport(cardKey, (payloads) => append(payloads as T[]));
+  }, [cardKey, append]);
+
   return {
     instances,
     selected,
@@ -44,6 +70,6 @@ export function useCardInstances<T>(initial: T): CardInstances<T> {
     select: setSelected,
     add,
     setCurrent,
-    replaceCurrent: setCurrent,
+    append,
   };
 }

@@ -37,8 +37,9 @@ export default function AbilityEditor() {
     current: ability,
     select,
     add,
+    append,
     setCurrent: setAbility,
-  } = useCardInstances<AbilityCardModel>(initialAbilityCard);
+  } = useCardInstances<AbilityCardModel>(initialAbilityCard, "ability");
 
   return (
     <div className={clsx("d-print-none", styles.editor)}>
@@ -64,7 +65,7 @@ export default function AbilityEditor() {
               onClick={async () => {
                 const ability = await loadOrToast(loadAbilityCard);
 
-                if (ability) setAbility(ability);
+                if (ability) append([ability]);
               }}
             >
               <FontAwesomeIcon icon={faUpload} /> Open

@@ -34,8 +34,9 @@ export default function UnitEditor() {
     current: unit,
     select,
     add,
+    append,
     setCurrent: setUnit,
-  } = useCardInstances<Unit>(initialUnit);
+  } = useCardInstances<Unit>(initialUnit, "unit");
 
   return (
     <div className={clsx("d-print-none", styles.editor)}>
@@ -61,7 +62,7 @@ export default function UnitEditor() {
               onClick={async () => {
                 const unit = await loadOrToast(loadUnit);
 
-                if (unit) setUnit(unit);
+                if (unit) append([unit]);
               }}
             >
               <FontAwesomeIcon icon={faUpload} /> Open

@@ -40,8 +40,9 @@ export default function CreatureBankUnitEditor() {
     current: unit,
     select,
     add,
+    append,
     setCurrent: setUnit,
-  } = useCardInstances<CreatureBankUnitModel>(initialCreatureBankUnit);
+  } = useCardInstances<CreatureBankUnitModel>(initialCreatureBankUnit, "creatureBankUnit");
 
   return (
     <div className={clsx("d-print-none", styles.editor)}>
@@ -67,7 +68,7 @@ export default function CreatureBankUnitEditor() {
               onClick={async () => {
                 const unit = await loadOrToast(loadCreatureBankUnit);
 
-                if (unit) setUnit(unit);
+                if (unit) append([unit]);
               }}
             >
               <FontAwesomeIcon icon={faUpload} /> Open

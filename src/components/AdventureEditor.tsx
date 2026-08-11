@@ -40,8 +40,9 @@ export default function AdventureEditor() {
     current: adventure,
     select,
     add,
+    append,
     setCurrent: setAdventure,
-  } = useCardInstances<AdventureCardModel>(initialAdventureCard);
+  } = useCardInstances<AdventureCardModel>(initialAdventureCard, "adventure");
 
   return (
     <div className={clsx("d-print-none", styles.editor)}>
@@ -70,7 +71,7 @@ export default function AdventureEditor() {
               onClick={async () => {
                 const adventure = await loadOrToast(loadAdventureCard);
 
-                if (adventure) setAdventure(adventure);
+                if (adventure) append([adventure]);
               }}
             >
               <FontAwesomeIcon icon={faUpload} /> Open
