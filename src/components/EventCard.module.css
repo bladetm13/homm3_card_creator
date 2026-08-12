@@ -9,7 +9,7 @@
   margin: 0;
   letter-spacing: 0.05em;
   color: var(--white);
-  text-shadow: 0 0.25mm 0.5mm black;
+  text-shadow: 0 0 0.25mm black, 0 0.25mm 0.5mm black;
   /* Bands from stables.xcf (2900x2090 canvas). */
   padding: 12.5mm 10.7mm 6mm 10.7mm;
 

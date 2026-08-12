@@ -10,7 +10,7 @@
   margin: 0;
   letter-spacing: 0.05em;
   color: var(--white);
-  text-shadow: 0 0.25mm 0.5mm black;
+  text-shadow: 0 0 0.25mm black, 0 0.25mm 0.5mm black;
 
   display: grid;
   grid-template-columns: 9.3mm minmax(0, 1fr);

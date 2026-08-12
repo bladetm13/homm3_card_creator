@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import clsx from "clsx";
 import { CardKey } from "@/lib/detectCardFile";
 
 import HeroCard from "./HeroCard";
@@ -47,6 +48,24 @@ export interface LoadedCard {
   key: CardKey;
   name: string;
   payload: unknown;
+  /** How many of this card to print. Absent means one. */
+  copies?: number;
+  /** Whether the card's face is printed. Absent means yes. */
+  front?: boolean;
+  /** Whether the card's back is printed. Absent means yes. */
+  back?: boolean;
+  /** Heroes only: whether the hero board is printed. Absent means yes. */
+  board?: boolean;
+}
+
+/** The per-card print options, with their defaults filled in. */
+export function optionsOf(card: LoadedCard) {
+  return {
+    copies: Math.max(1, Math.floor(card.copies ?? 1)),
+    front: card.front ?? true,
+    back: card.back ?? true,
+    board: card.board ?? true,
+  };
 }
 
 type Shape = "portrait";
@@ -220,6 +239,44 @@ export function pairsFor(card: LoadedCard): Pair[] {
   }
 }
 
+/**
+ * One piece to cut out. Normally a front and its back joined along the fold
+ * line, but dropping either side leaves a single card face that is simply cut
+ * out on its own. Width is counted in card faces, so a fold-pair is 2 and a
+ * lone face is 1.
+ */
+interface Piece {
+  width: 1 | 2;
+  faces: React.ReactNode[];
+}
+
+/** The pieces a card contributes, honouring its front/back/copies options. */
+export function piecesFor(card: LoadedCard): Piece[] {
+  const { copies, front, back } = optionsOf(card);
+  if (!front && !back) return [];
+
+  const pieces: Piece[] = [];
+  for (let copy = 0; copy < copies; copy++) {
+    for (const pair of pairsFor(card)) {
+      if (front && back)
+        pieces.push({ width: 2, faces: [pair.front, pair.back] });
+      else pieces.push({ width: 1, faces: [front ? pair.front : pair.back] });
+    }
+  }
+  return pieces;
+}
+
+/** The faces of one piece, butted together: the join is the fold line. */
+function PieceFaces({ piece }: { piece: Piece }) {
+  return (
+    <div style={{ display: "flex" }}>
+      {piece.faces.map((face, fi) => (
+        <React.Fragment key={fi}>{face}</React.Fragment>
+      ))}
+    </div>
+  );
+}
+
 function chunk<T>(items: T[], size: number): T[][] {
   const out: T[][] = [];
   for (let i = 0; i < items.length; i += size)
@@ -230,37 +287,69 @@ function chunk<T>(items: T[], size: number): T[][] {
 /** Hero boards are 134mm x 96mm, so two sit side by side on a landscape sheet. */
 const BOARDS_PER_SHEET = 2;
 
+/** The boards to print: one per hero card that still asks for its board. */
 function heroesIn(cards: LoadedCard[]): Hero[] {
   return cards
-    .filter((card) => card.key === "hero")
-    .map((card) => card.payload as Hero);
+    .filter((card) => card.key === "hero" && optionsOf(card).board)
+    .flatMap((card) =>
+      Array<Hero>(optionsOf(card).copies).fill(card.payload as Hero),
+    );
 }
 
 function boardSheetsFor(cards: LoadedCard[]): Hero[][] {
   return chunk(heroesIn(cards), BOARDS_PER_SHEET);
 }
 
+/**
+ * Fills rows left to right, starting a new one when the next piece no longer
+ * fits. A fold-pair takes two card faces' worth of room, a lone face one, so a
+ * row holds two pairs, four singles, or a pair and two singles.
+ */
+function rowsFor(pieces: Piece[]): Piece[][] {
+  const { cols } = PER_SHEET.portrait;
+  const perRow = cols * 2;
+
+  const rows: Piece[][] = [];
+  let row: Piece[] = [];
+  let used = 0;
+  for (const piece of pieces) {
+    if (used + piece.width > perRow) {
+      rows.push(row);
+      row = [];
+      used = 0;
+    }
+    row.push(piece);
+    used += piece.width;
+  }
+  if (row.length) rows.push(row);
+  return rows;
+}
+
 function sheetsFor(cards: LoadedCard[]) {
-  const pairs = cards.flatMap(pairsFor);
-  const { cols, rows } = PER_SHEET.portrait;
-  return chunk(pairs, cols * rows).map((page) => chunk(page, cols));
+  const { rows } = PER_SHEET.portrait;
+  return chunk(rowsFor(cards.flatMap(piecesFor)), rows);
 }
 
 /**
  * Cropped output: one pair (or one board) per page, on a page sized to fit it
  * exactly. Nothing is laid out on A4, so there is no white border to trim.
  */
-function CroppedSheets({ cards }: { cards: LoadedCard[] }) {
+function CroppedSheets({
+  cards,
+  cutoutLevels,
+}: {
+  cards: LoadedCard[];
+  cutoutLevels: boolean;
+}) {
   return (
     <div style={{ ["--adjust-scale" as string]: "1" }}>
-      {cards.flatMap(pairsFor).map((pair, pi) => (
-        <div className="cropPair page" key={pi}>
+      {cards.flatMap(piecesFor).map((piece, pi) => (
+        <div
+          className={clsx(piece.width === 2 ? "cropPair" : "cropFace", "page")}
+          key={pi}
+        >
           <div>
-            {/* Front and back butt together; the join is the fold line. */}
-            <div style={{ display: "flex" }}>
-              {pair.front}
-              {pair.back}
-            </div>
+            <PieceFaces piece={piece} />
           </div>
         </div>
       ))}
@@ -268,7 +357,7 @@ function CroppedSheets({ cards }: { cards: LoadedCard[] }) {
       {heroesIn(cards).map((hero, bi) => (
         <div className="cropBoard page" key={`board-${bi}`}>
           <div>
-            <HeroBoard hero={hero} />
+            <HeroBoard hero={hero} cutoutLevels={cutoutLevels} />
           </div>
         </div>
       ))}
@@ -279,11 +368,14 @@ function CroppedSheets({ cards }: { cards: LoadedCard[] }) {
 export default function PdfSheets({
   cards,
   cropped = false,
+  cutoutLevels = false,
 }: {
   cards: LoadedCard[];
   cropped?: boolean;
+  cutoutLevels?: boolean;
 }) {
-  if (cropped) return <CroppedSheets cards={cards} />;
+  if (cropped)
+    return <CroppedSheets cards={cards} cutoutLevels={cutoutLevels} />;
 
   const cardSheets = sheetsFor(cards);
   return (
@@ -293,12 +385,8 @@ export default function PdfSheets({
           <div>
             {sheet.map((row, ri) => (
               <div style={{ display: "flex", flexDirection: "row" }} key={ri}>
-                {row.map((pair, pi) => (
-                  // Front and back butt together; the join is the fold line.
-                  <div style={{ display: "flex" }} key={pi}>
-                    {pair.front}
-                    {pair.back}
-                  </div>
+                {row.map((piece, pi) => (
+                  <PieceFaces piece={piece} key={pi} />
                 ))}
               </div>
             ))}
@@ -312,7 +400,7 @@ export default function PdfSheets({
           <div>
             <div style={{ display: "flex", flexDirection: "row" }}>
               {boards.map((hero, bi) => (
-                <HeroBoard hero={hero} key={bi} />
+                <HeroBoard hero={hero} cutoutLevels={cutoutLevels} key={bi} />
               ))}
             </div>
           </div>
@@ -325,7 +413,7 @@ export default function PdfSheets({
 export function sheetCount(cards: LoadedCard[], cropped = false): number {
   if (cropped)
     return (
-      cards.reduce((n, card) => n + pairsFor(card).length, 0) +
+      cards.reduce((n, card) => n + piecesFor(card).length, 0) +
       heroesIn(cards).length
     );
   return sheetsFor(cards).length + boardSheetsFor(cards).length;
@@ -333,4 +421,9 @@ export function sheetCount(cards: LoadedCard[], cropped = false): number {
 
 export function boardCount(cards: LoadedCard[]): number {
   return heroesIn(cards).length;
+}
+
+/** How many cards this entry prints — one per piece cut out. */
+export function cardCountFor(card: LoadedCard): number {
+  return piecesFor(card).length;
 }

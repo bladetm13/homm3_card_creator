@@ -48,6 +48,7 @@ export default function Home() {
   // render outside the d-print-none wrapper around the tabs.
   const [pdfCards, setPdfCards] = useState<LoadedCard[]>([]);
   const [pdfCropped, setPdfCropped] = useState(false);
+  const [pdfCutoutLevels, setPdfCutoutLevels] = useState(false);
   const [ready, setReady] = useState(false);
   useEffect(() => setReady(true), []);
 
@@ -200,6 +201,8 @@ export default function Home() {
               setCards={setPdfCards}
               cropped={pdfCropped}
               setCropped={setPdfCropped}
+              cutoutLevels={pdfCutoutLevels}
+              setCutoutLevels={setPdfCutoutLevels}
             />
           </Tab>
         </Tabs>
@@ -208,7 +211,11 @@ export default function Home() {
         className={activeTab === "pdf" ? "printOnly" : "d-none d-print-block"}
       >
         {activeTab === "pdf" ? (
-          <PdfSheets cards={pdfCards} cropped={pdfCropped} />
+          <PdfSheets
+            cards={pdfCards}
+            cropped={pdfCropped}
+            cutoutLevels={pdfCutoutLevels}
+          />
         ) : (
           <PrintView />
         )}

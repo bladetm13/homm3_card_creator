@@ -2,6 +2,12 @@
   margin: 1rem;
 }
 
+/* Wide enough for two digits and the spinner, no wider. */
+.copies {
+  width: 4.5rem;
+  margin: 0 auto;
+}
+
 @media screen and (min-width: 1200px) {
   .editor {
     width: 90%;

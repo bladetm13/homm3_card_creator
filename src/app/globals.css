@@ -99,6 +99,20 @@ h5 {
     height: 210mm;
   }
 
+  /* A lone card face is 62.5x87.9, which is A4 portrait's aspect to within
+     0.6% — so it gets an upright page rather than the landscape one a
+     fold-pair uses. */
+  @page cropUpright {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  .cropFace {
+    page: cropUpright;
+    width: 210mm;
+    height: 297mm;
+  }
+
   .page {
     page-break-inside: avoid;
     display: flex;
@@ -122,6 +136,10 @@ h5 {
   /* Both scale about the centre, where .page's flex box has already put them. */
   .cropPair > div {
     transform: scale(calc(297 / 125), calc(210 / 87.9));
+  }
+
+  .cropFace > div {
+    transform: scale(calc(210 / 62.5), calc(297 / 87.9));
   }
 
   .cropBoard > div {

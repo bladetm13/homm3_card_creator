@@ -16,17 +16,24 @@ import LevelDirectionIcon from "@/assets/glyphsInternal/level_direction.svg";
 import { townColors } from "@/models/color";
 import { useBackground, useBorder } from "@/hooks/background";
 
-export default function HeroBoard({ hero }: { hero: Hero }) {
+export default function HeroBoard({
+  hero,
+  cutoutLevels = false,
+}: {
+  hero: Hero;
+  /** Leaves the thirteen level track squares unprinted, ready to be cut out. */
+  cutoutLevels?: boolean;
+}) {
   const townColor = townColors[hero.town];
   const bgUrl = useBackground(
-    hero.customClass?.background ?? townColor.background ?? townColor.color
+    hero.customClass?.background ?? townColor.background ?? townColor.color,
   );
   const borderUrl = useBorder(hero.customClass?.color ?? townColor.color);
   const statistics = hero.customClass?.statistics ?? hero.statistics;
 
   return (
     <section
-      className={styles.board}
+      className={clsx(styles.board, cutoutLevels && styles.cutoutLevels)}
       style={
         {
           "--name-background": bgUrl,
