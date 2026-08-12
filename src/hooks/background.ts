@@ -7,28 +7,24 @@ import { useDebounceValue } from "usehooks-ts";
 
 function useCssUrl(
   generator: (color: string) => Promise<string>,
-  color: string
+  color: string,
 ) {
   const [cssUrl, setCssUrl] = useState("none");
   const [debouncedColor] = useDebounceValue(color, 1000); // 1s debounce
 
   useEffect(() => {
-    let objectUrl: string | null = null;
     let cancelled = false;
 
     (async () => {
+      // The generators cache by colour, so this URL is shared with every other
+      // card using the same colour: it must outlive this component and is
+      // never revoked here.
       const url = await generator(debouncedColor);
-      if (cancelled) {
-        URL.revokeObjectURL(url);
-        return;
-      }
-      objectUrl = url;
-      setCssUrl(`url(${url})`);
+      if (!cancelled) setCssUrl(`url(${url})`);
     })();
 
     return () => {
       cancelled = true;
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
   }, [generator, debouncedColor]);
 

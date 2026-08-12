@@ -77,7 +77,45 @@ function computeFilterFromColors(input: string, output: string): mat3 {
   return M;
 }
 
-export async function generateBackground(color: string): Promise<string> {
+/**
+ * Both generators are pure functions of their colour, and a sheet of cards asks
+ * for the same handful of colours over and over — a deck of neutral units alone
+ * repeats the same three per card. Each call is a per-pixel pass over a
+ * 1209x1093 image plus a re-encode, around 45ms, so the results are cached.
+ *
+ * The *promise* is cached rather than the string: cards mount together, so the
+ * first colour is usually still in flight when the next card asks for it.
+ * Callers must therefore never revoke the URL they are handed — it is shared.
+ */
+const backgrounds = new Map<string, Promise<string>>();
+const borders = new Map<string, Promise<string>>();
+
+function cached(
+  cache: Map<string, Promise<string>>,
+  color: string,
+  compute: (color: string) => Promise<string>,
+): Promise<string> {
+  let url = cache.get(color);
+  if (!url) {
+    url = compute(color).catch((error) => {
+      // A failed render must not be remembered as the answer for this colour.
+      cache.delete(color);
+      throw error;
+    });
+    cache.set(color, url);
+  }
+  return url;
+}
+
+export function generateBackground(color: string): Promise<string> {
+  return cached(backgrounds, color, renderBackground);
+}
+
+export function renderBorderWithShadow(color: string): Promise<string> {
+  return cached(borders, color, renderBorder);
+}
+
+async function renderBackground(color: string): Promise<string> {
   const mat = computeFilterFromColors(leatherColor, color);
   const img = await loadImage(LeatherBackground.src);
 
@@ -118,9 +156,7 @@ export async function generateBackground(color: string): Promise<string> {
   }
 }
 
-export async function renderBorderWithShadow(
-  borderColor: string,
-): Promise<string> {
+async function renderBorder(borderColor: string): Promise<string> {
   const img = await loadImage(Border.src);
 
   const canvas = document.createElement("canvas");

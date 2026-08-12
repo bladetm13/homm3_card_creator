@@ -48,11 +48,17 @@ function TypeBadge({ type }: { type: UnitType }) {
   }
 }
 
+/* Fixed for every neutral unit — hoisted so the whole deck shares one string,
+   and with it one cached render of each. */
+const BORDER_COLOR = "#e8d66b";
+const TINT_COLOR = "#6c5e38";
+const TINT_DARK_COLOR = "#3c3321";
+
 export default function UnitCard({ unit }: { unit: Unit }) {
   const tierStar = tierStars[unit.tier];
-  const borderUrl = useBorder("#e8d66b");
-  const tintUrl = useBackground("#6c5e38");
-  const tintDarkUrl = useBackground("#3c3321");
+  const borderUrl = useBorder(BORDER_COLOR);
+  const tintUrl = useBackground(TINT_COLOR);
+  const tintDarkUrl = useBackground(TINT_DARK_COLOR);
 
   return (
     <div
