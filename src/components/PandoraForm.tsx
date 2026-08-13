@@ -1,6 +1,6 @@
 "use client";
 
-import { PandoraCard } from "@/models/pandoraCard";
+import { PandoraCard, defaultPandoraName } from "@/models/pandoraCard";
 import { Form } from "react-bootstrap";
 import { iconMap } from "@/lib/textToComponent";
 import styles from "./HeroForm.module.css";
@@ -12,10 +12,21 @@ export default function PandoraForm({
   pandora: PandoraCard;
   setPandora: (pandora: PandoraCard) => void;
 }) {
+  const setName = (name: string) => setPandora({ ...pandora, name });
   const setEffect = (effect: string) => setPandora({ ...pandora, effect });
 
   return (
     <Form>
+      <Form.Group className="mb-3" controlId="pandoraName">
+        <Form.Label>Name</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder={defaultPandoraName}
+          value={pandora.name ?? ""}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </Form.Group>
+
       <Form.Group className="mb-3" controlId="pandoraEffectContent">
         <Form.Label>Effect</Form.Label>
         <Form.Control

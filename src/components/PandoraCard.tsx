@@ -1,6 +1,9 @@
 "use client";
 
-import { PandoraCard as PandoraCardModel } from "@/models/pandoraCard";
+import {
+  PandoraCard as PandoraCardModel,
+  defaultPandoraName,
+} from "@/models/pandoraCard";
 import styles from "./PandoraCard.module.css";
 import { textToComponent } from "@/lib/textToComponent";
 import { useBorder } from "@/hooks/background";
@@ -19,7 +22,7 @@ export default function PandoraCard({
     >
       <div className={styles.inner}>
         <div className={styles.title}>
-          <h3>Pandora&apos;s Box</h3>
+          <h3>{pandora.name || defaultPandoraName}</h3>
         </div>
 
         <div

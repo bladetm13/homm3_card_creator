@@ -1,6 +1,7 @@
-import { PandoraCard } from "@/models/pandoraCard";
+import { PandoraCard, defaultPandoraName } from "@/models/pandoraCard";
 import { fileOpen } from "browser-fs-access";
 import saveAs from "file-saver";
+import { normalizeString } from "./normalizeString";
 
 interface JsonFormat {
   herocreator: "0.1";
@@ -44,6 +45,6 @@ export function savePandoraCard(pandora: PandoraCard) {
     new Blob([stringifyPandoraCard(pandora)], {
       type: "application/json;charset=utf-8",
     }),
-    `pandoras_box.homm3pandora.json`
+    `${normalizeString(pandora.name || defaultPandoraName)}.homm3pandora.json`,
   );
 }

@@ -2,6 +2,7 @@
 
 import {
   PandoraCard as PandoraCardModel,
+  defaultPandoraName,
   initialPandoraCard,
 } from "@/models/pandoraCard";
 import { useCardInstances } from "@/hooks/cardInstances";
@@ -81,7 +82,13 @@ export default function PandoraEditor() {
             </Button>
             <Button
               variant="outline-success"
-              onClick={() => sendToPdf("pandora", "Pandora's Box", pandora)}
+              onClick={() =>
+                sendToPdf(
+                  "pandora",
+                  pandora.name || defaultPandoraName,
+                  pandora,
+                )
+              }
             >
               <FontAwesomeIcon icon={faFilePdf} /> Send to PDF
             </Button>
