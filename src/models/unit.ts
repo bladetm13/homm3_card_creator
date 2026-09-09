@@ -35,6 +35,8 @@ export interface Unit {
 
 // prettier-ignore
 export const unitPortraits: UnitPortrait[] = [
+  { name: "Halberdiers", path: "monsters/halberdiers.png" },
+  // todo: replace
   { name: "Boars", path: "monsters/boars.png" },
   { name: "Arch Devils", path: "monsters/arch_devils.png" },
   { name: "Evil Eyes", path: "monsters/evil_eyes.png" },
